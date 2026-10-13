@@ -4,8 +4,36 @@ import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _onLoginPressed() {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    final message = (username.isEmpty || password.isEmpty)
+        ? AppStrings.fillAllFields
+        : AppStrings.loginSuccess;
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +53,19 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppDimens.spaceL),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
                   hintText: AppStrings.usernameHint,
                   filled: true,
                   fillColor: AppColors.field,
                 ),
               ),
               const SizedBox(height: AppDimens.spaceS),
-              const TextField(
+              TextField(
+                controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: AppStrings.passwordHint,
                   filled: true,
                   fillColor: AppColors.field,
@@ -43,7 +73,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppDimens.spaceM),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: _onLoginPressed,
                 child: const Text(AppStrings.loginButton),
               ),
               _whiteTextButton(AppStrings.forgotPassword),
