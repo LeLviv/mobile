@@ -10,7 +10,7 @@ class AppConfig {
   static String get apiBaseUrl {
     assert(
     _baseUrl.isNotEmpty,
-    'API_BASE_URL порожній! Запустіть проєкт із прапорцем: '
+    'API_BASE_URL is not configured! Please provide environment variables via: '
         '--dart-define-from-file=.env.dev',
     );
     return _baseUrl;
