@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/constants/app_routes.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/network/api_endpoints.dart';
 import '../../core/theme/app_colors.dart';
@@ -30,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     final phone = _phoneController.text.trim();
     final password = _passwordController.text;
-
 
     if (phone.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -65,7 +65,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Успішний вхід!')),
         );
-
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Помилка авторизації: ${response.statusCode}')),
@@ -145,7 +144,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               _whiteTextButton(AppStrings.continueAsGuest),
-              _whiteTextButton(AppStrings.register),
+              _whiteTextButton(
+                AppStrings.register,
+                onPressed: () =>
+                    Navigator.pushNamed(context, AppRoutes.register),
+              ),
             ],
           ),
         ),
@@ -153,9 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _whiteTextButton(String label) {
+  Widget _whiteTextButton(String label, {VoidCallback? onPressed}) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed ?? () {},
       child: Text(label, style: const TextStyle(color: AppColors.text)),
     );
   }
