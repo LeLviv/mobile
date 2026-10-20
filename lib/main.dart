@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'core/constants/app_routes.dart';
 import 'features/auth/login_screen.dart';
+import 'features/auth/register_screen.dart';
 
 void main() {
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: LoginScreen(),
+    initialRoute: AppRoutes.login,
+    routes: {
+      AppRoutes.login: (_) => const LoginScreen(),
+      AppRoutes.register: (_) => const RegisterScreen(),
+    },
   ));
 }
