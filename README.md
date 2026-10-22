@@ -23,8 +23,8 @@ Before you can run the app, make sure you have the following ready on your compu
      ```
    - Make sure Flutter and your Android toolchain have green checkmarks.
 
-2. **A Code Editor**
-   - **VS Code** (with the *Flutter* and *Dart* extensions installed) or **Android Studio**.
+2. **A Code Editor / IDE**
+   - **VS Code** (with the *Flutter* and *Dart* extensions installed), **Android Studio**, or **IntelliJ IDEA** (note: both Android Studio and IntelliJ IDEA require the *Flutter* and *Dart* plugins installed).
 
 3. **A Device or Emulator to test on**
    - An **Android Emulator** (configured in Android Studio), OR
@@ -63,41 +63,95 @@ flutter pub get
 ```
 
 ### Step 3: Run the application
-Start your emulator or connect your phone, and run:
+
+You can start the app directly:
 ```bash
 flutter run
 ```
 
-That's it! The app will build and open on your device screen.
+> **Note on Environment Variables:**
+> Running `flutter run` without environment configuration is fine if you only want to inspect and test the UI layout. However, tapping buttons that trigger API requests (such as **Login**) will fail with an error because `API_BASE_URL` is required by `AppConfig`. To connect to your backend, choose one of the options below.
 
 ---
 
-### Optional: Connecting to the Backend Server
+### Connecting to the Backend Server
 
-When you click **Login** in the app, it communicates with the backend server. 
+You can pass configuration variables using an `.env` file (recommended) or via command-line arguments:
 
-If you want to explicitly pass the backend API URL when starting the app:
+#### Option A: Using an `.env` file (Recommended)
+
+1. Create a `.env.dev` file by copying the example template:
+   ```bash
+   cp .env.example .env.dev
+   ```
+   *(On Windows PowerShell: `Copy-Item .env.example .env.dev`)*
+
+2. Open `.env.dev` and configure your `API_BASE_URL` depending on your test device:
+   ```properties
+   ENV=dev
+
+   # -----------------------------------------------------------------------------
+   # API BASE URL
+   # -----------------------------------------------------------------------------
+   # 1. Android Emulator (default for local development with Docker):
+   API_BASE_URL=http://10.0.2.2:8080/api/v1
+
+   # 2. iOS Simulator (macOS only):
+   # API_BASE_URL=http://localhost:8080/api/v1
+
+   # 3. Physical smartphone (must be connected to the same Wi-Fi network as your PC):
+   # API_BASE_URL=http://192.168.x.x:8080/api/v1
+
+   # 4. Shared Dev / Staging server (cloud-hosted):
+   # API_BASE_URL=https://dev-api.lelviv.com/api/v1
+   ```
+
+3. Launch Flutter with the `--dart-define-from-file` flag:
+   ```bash
+   flutter run --dart-define-from-file=.env.dev
+   ```
+
+#### Option B: Passing directly via `--dart-define`
+
+You can also pass the backend URL inline without a file:
 ```bash
 flutter run --dart-define=API_BASE_URL=<YOUR_BACKEND_URL>
 ```
-**Where to get the backend URL:**
-*See `.env.example` in the project root for the full list of variables.*
 
 ---
 
 ## Running from your Code Editor (1 Click)
 
-You don't need to use the terminal every time - you can run the app directly from your editor:
+You don't need to use the terminal every time - you can configure the environment flag in your IDE to run with one click:
 
 ### In VS Code:
 1. Open the project in VS Code.
-2. Open [`lib/main.dart`](lib/main.dart).
-3. Press **F5** (or click **Run > Start Debugging**).
+2. Create or edit `.vscode/launch.json` and add `"toolArgs"`:
+   ```json
+   {
+     "version": "0.2.0",
+     "configurations": [
+       {
+         "name": "LeLviv Mobile (dev)",
+         "request": "launch",
+         "type": "dart",
+         "toolArgs": ["--dart-define-from-file=.env.dev"]
+       }
+     ]
+   }
+   ```
+3. Open [`lib/main.dart`](lib/main.dart) and press **F5** (or click **Run > Start Debugging**).
 
-### In Android Studio:
+### In Android Studio or IntelliJ IDEA:
 1. Select your emulator or device from the device dropdown at the top.
-2. Select `main.dart` in the configuration dropdown.
-3. Click the green **Run (Play)** button.
+2. In the run configurations dropdown, click **Edit Configurations...**.
+3. Select your Flutter configuration (e.g., `main.dart`).
+4. In the **Additional run args** field, enter:
+   ```text
+   --dart-define-from-file=.env.dev
+   ```
+5. Click **Apply** and **OK**.
+6. Click the green **Run (Play)** button.
 
 ---
 
@@ -126,7 +180,7 @@ lib/
 
 ## Quick Guide for New Developers
 
-Here are a few simple rules our team follows to keep the code clean and easy to maintain:
+Here are a few simple rules our team follows to keep the code clean and easy to maintain (helpful for both developers and AI assistants):
 
 ### 1. Where do I change colors or sizing?
 - Never write hardcoded colors like `Colors.orange` directly in screens.
@@ -144,12 +198,9 @@ Here are a few simple rules our team follows to keep the code clean and easy to 
 ### 4. Where does the app start?
 - In [`lib/main.dart`](lib/main.dart), you'll see the `main()` function.
   It initializes Flutter and opens the first screen.
-
 ---
 
 ## Frequently Asked Questions (FAQ)
-
-
 
 ### Q: How do I check if my code has errors or warnings?
 **A:** Run this command in your terminal:
@@ -161,9 +212,15 @@ It will analyze your Dart code and let you know if there are any issues or style
 ### Q: Why do I see an error when pressing the Login button?
 **A:** Make sure:
 1. Your backend container is started and running in Docker Desktop.
-2. You provide the API URL when running the app if required:
+2. You provided the environment variables when running the app. If you ran `flutter run` without an env configuration, the UI will display, but clicking buttons that perform network calls will fail with an error because `API_BASE_URL` is empty. Run with:
    ```bash
+   flutter run --dart-define-from-file=.env.dev
+   # or
    flutter run --dart-define=API_BASE_URL=<YOUR_BACKEND_URL>
+   ```
+3. If running on an **Android Emulator**, make sure your URL is set to `http://10.0.2.2:8080/api/v1` (not `localhost`), or forward the port using:
+   ```bash
+   adb reverse tcp:8080 tcp:8080
    ```
 
 ---
