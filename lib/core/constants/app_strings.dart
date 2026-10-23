@@ -22,4 +22,6 @@ abstract final class AppStrings {
   static const usernameTooShort = "Ім'я має містити мінімум 2 символи";
   static const phoneInvalid = 'Номер телефону має містити 12 цифр, наприклад 380671234567';
   static const passwordTooShort = 'Пароль має містити мінімум 8 символів';
+  static const loginError = 'Помилка авторизації';
+  static const connectionError = 'Помилка з\'єднання з сервером';
 }

@@ -28,14 +28,18 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _showMessage(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(text)),
+    );
+  }
+
   Future<void> _login() async {
     final phone = _phoneController.text.trim();
     final password = _passwordController.text;
 
     if (phone.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Будь ласка, заповніть всі поля')),
-      );
+      _showMessage(AppStrings.fillAllFields);
       return;
     }
 
@@ -43,11 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    final url = ApiEndpoints.authenticate;
-
     try {
       final response = await http.post(
-        url,
+        ApiEndpoints.authenticate,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -60,21 +62,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Успішний вхід!')),
-        );
+        _showMessage(AppStrings.loginSuccess);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Помилка авторизації: ${response.statusCode}')),
-        );
+        debugPrint('Login failed: ${response.statusCode} ${response.body}');
+        _showMessage(AppStrings.loginError);
       }
     } catch (e) {
+      debugPrint('Login exception: $e');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Помилка з\'єднання з сервером: $e')),
-      );
+      _showMessage(AppStrings.connectionError);
     } finally {
       if (mounted) {
         setState(() {
