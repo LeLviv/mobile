@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/constants/app_routes.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/network/api_endpoints.dart';
 import '../../core/theme/app_colors.dart';
@@ -97,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: AppDimens.spaceL),
+
               TextField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -107,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: AppDimens.spaceS),
+
               TextField(
                 controller: _passwordController,
                 obscureText: true,
@@ -117,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: AppDimens.spaceM),
+
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 child: _isLoading
@@ -136,7 +140,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               _whiteTextButton(AppStrings.continueAsGuest),
-              _whiteTextButton(AppStrings.register),
+              _whiteTextButton(
+                AppStrings.register,
+                onPressed: () =>
+                    Navigator.pushNamed(context, AppRoutes.register),
+              ),
             ],
           ),
         ),
@@ -144,9 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _whiteTextButton(String label) {
+  Widget _whiteTextButton(String label, {VoidCallback? onPressed}) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed ?? () {},
       child: Text(label, style: const TextStyle(color: AppColors.text)),
     );
   }
