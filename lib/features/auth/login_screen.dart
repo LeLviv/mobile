@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../../core/constants/api_endpoints.dart';
 import '../../core/constants/app_strings.dart';
+import '../../core/network/api_endpoints.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 
@@ -102,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
-                  hintText: AppStrings.phoneHint,
+                  hintText: AppStrings.usernameHint,
                   filled: true,
                   fillColor: AppColors.field,
                 ),

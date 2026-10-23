@@ -1,6 +1,6 @@
 abstract final class AppStrings {
   static const loginTitle = 'Вхід';
-  static const phoneHint = "номер телефону";
+  static const usernameHint = "ім'я користувача";
   static const passwordHint = 'пароль';
   static const loginButton = 'Увійти';
   static const forgotPassword = 'Забули пароль?';
