@@ -92,8 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'firstname': _usernameController.text.trim(),
-          'lastname': _usernameController.text.trim(),
+          'username': _usernameController.text.trim(),
           'email': _emailController.text.trim(),
           'password': _passwordController.text,
         }),
