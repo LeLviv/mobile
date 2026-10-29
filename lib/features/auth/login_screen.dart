@@ -16,14 +16,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -35,10 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (phone.isEmpty || password.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       _showMessage(AppStrings.fillAllFields);
       return;
     }
@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'phoneNumber': phone,
+          'email': email,
           'password': password,
         }),
       );
@@ -63,6 +63,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         _showMessage(AppStrings.loginSuccess);
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.home,
+              (route) => false,
+        );
       } else {
         debugPrint('Login failed: ${response.statusCode} ${response.body}');
         _showMessage(AppStrings.loginError);
@@ -100,10 +106,10 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: AppDimens.spaceL),
 
               TextField(
-                controller: _phoneController,
+                controller: _emailController,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
-                  hintText: AppStrings.usernameHint,
+                  hintText: AppStrings.emailaddress,
                   filled: true,
                   fillColor: AppColors.field,
                 ),
