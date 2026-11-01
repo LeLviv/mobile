@@ -16,26 +16,30 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  void _showMessage(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(text)),
+    );
+  }
+
   Future<void> _login() async {
-    final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (phone.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Будь ласка, заповніть всі поля')),
-      );
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage(AppStrings.fillAllFields);
       return;
     }
 
@@ -43,16 +47,14 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    final url = ApiEndpoints.authenticate;
-
     try {
       final response = await http.post(
-        url,
+        ApiEndpoints.authenticate,
         headers: {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'phoneNumber': phone,
+          'email': email,
           'password': password,
         }),
       );
@@ -60,21 +62,21 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
+        _showMessage(AppStrings.loginSuccess);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Успішний вхід!')),
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.home,
+              (route) => false,
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Помилка авторизації: ${response.statusCode}')),
-        );
+        debugPrint('Login failed: ${response.statusCode} ${response.body}');
+        _showMessage(AppStrings.loginError);
       }
     } catch (e) {
+      debugPrint('Login exception: $e');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Помилка з\'єднання з сервером: $e')),
-      );
+      _showMessage(AppStrings.connectionError);
     } finally {
       if (mounted) {
         setState(() {
@@ -104,10 +106,10 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: AppDimens.spaceL),
 
               TextField(
-                controller: _phoneController,
+                controller: _emailController,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
-                  hintText: AppStrings.usernameHint,
+                  hintText: AppStrings.emailaddress,
                   filled: true,
                   fillColor: AppColors.field,
                 ),
