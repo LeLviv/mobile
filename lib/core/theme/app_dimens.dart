@@ -9,10 +9,12 @@ abstract final class AppDimens {
   static const double homeScreenPadding = 16;
   static const double sectionGap = 20;
   static const double smallGap = 12;
+  static const double formFieldGap = 8;
 
   static const double cardRadius = 32;
-  static const double buttonRadius = 22;
+  static const double buttonRadiusregister = 22;
   static const double buttonHeight = 44;
+  static const double langRadius = 16;
   static const double buttonHeightCompact = 36;
 
   static const double avatarRadius = 24;
@@ -24,4 +26,11 @@ abstract final class AppDimens {
   static const double navRadius = 32;
   static const double fabBottom = 100;
   static const double listBottomPadding = 120;
+
+  static const double fieldRadius = 28;
+  static const double fieldRadiusPill = 100;
+  static const double fieldPaddingH = 28;
+  static const double fieldPaddingV = 14;
+  static const double hintSize = 20;
+  static const double buttonRadius = 24;
 }

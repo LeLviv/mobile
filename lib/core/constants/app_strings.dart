@@ -3,21 +3,27 @@ abstract final class AppStrings {
   static const emailaddress = 'електронна скринька';
   static const usernameHint = "ім'я користувача";
   static const passwordHint = 'пароль';
-  static const loginButton = 'Увійти';
+  static const loginButton = 'увійти';
   static const forgotPassword = 'Забули пароль?';
-  static const signInWithGoogle = 'Увійти через Google';
   static const continueAsGuest = 'Продовжити без реєстрації';
-  static const register = 'Немає акаунту? Зареєструватися';
+  static const loginWithGoogle = 'вхід через Гугл-акаунт';
+  static const noAccountQuestion = 'Немає акаунту?';
+  static const noAccountTap = 'Натисни';
+  static const noAccountRegister = 'тут щоб зареєструватися';
   static const loginSuccess = 'Вхід успішний';
   static const fillAllFields = 'Заповніть електорнну скриньку і пароль';
 
   static const registerTitle = 'Реєстрація';
-  static const registerButton = 'Зареєструватися';
+  static const registerButton = 'зареєструватися';
   static const registerWithGoogle = 'реєстрація через Гугл-акаунт';
   static const haveAccount = 'Вже є акаунт? Увійти';
   static const registerSuccess = 'Реєстрація успішна! Тепер увійдіть';
   static const registerError = 'Не вдалося зареєструватися. Спробуйте ще раз';
   static const connectionError = "Помилка з'єднання з сервером. Спробуйте пізніше";
+  static const languageCode = 'UA';
+  static const haveAccountQuestion = 'Уже маєш акаунт?';
+  static const haveAccountTap = 'Натисни';
+  static const haveAccountLogin = 'тут щоб увійти';
 
   static const emailHint = 'електронна скринька';
   static const confirmPasswordHint = 'підтвердження паролю';
