@@ -19,3 +19,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Neucha
+      fonts:
+        - asset: assets/fonts/Neucha-Regular.ttf
+
+    - family: LibreFranklin
+      fonts:
+        - asset: assets/fonts/LibreFranklin-Black.ttf
+          weight: 900
