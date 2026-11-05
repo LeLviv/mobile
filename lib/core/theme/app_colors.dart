@@ -6,7 +6,6 @@ abstract final class AppColors {
   static const headerRed = Color(0xFF7D1315);
 
   static const primary = Color(0xFFD63F27);
-  static const field = Colors.white;
   static const orange = Color(0xFFF58747);
   static const blue = Color(0xFF477BF5);
   static const blueDark = Color(0xFF09369E);
