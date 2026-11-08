@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
@@ -56,7 +57,7 @@ class WeatherCard extends StatelessWidget {
               Positioned(
                 top: 8,
                 left: 12,
-                child: Image.asset(
+                child: SvgPicture.asset(
                   AppAssets.sun,
                   width: AppDimens.homeSunSize,
                   height: AppDimens.homeSunSize,

@@ -19,6 +19,7 @@ abstract final class AppDimens {
   static const double homeWeatherCardSize = 160;
   static const double homeOutagesCardHeight = 240;
   static const double homeBellRadius = 38;
+  static const double homeShadowCircleFraction = 0.6;
   static const double homeDetailsButtonRadius = 20;
   static const double homeFabSize = 88;
   static const double homeFabRight = 20;

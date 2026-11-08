@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_dimens.dart';
 
 class PressIconButton extends StatefulWidget {
   final String asset;
@@ -54,8 +57,23 @@ class _PressIconButtonState extends State<PressIconButton> {
         width: widget.size,
         height: widget.size,
         child: Stack(
+          alignment: Alignment.center,
           children: [
-            Image.asset(
+            Container(
+              width: widget.size * AppDimens.homeShadowCircleFraction,
+              height: widget.size * AppDimens.homeShadowCircleFraction,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.homeShadow,
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+            ),
+            SvgPicture.asset(
               widget.asset,
               width: widget.size,
               height: widget.size,
@@ -64,7 +82,7 @@ class _PressIconButtonState extends State<PressIconButton> {
               AnimatedOpacity(
                 opacity: showPressed ? 1 : 0,
                 duration: const Duration(milliseconds: 100),
-                child: Image.asset(
+                child: SvgPicture.asset(
                   widget.pressedAsset!,
                   width: widget.size,
                   height: widget.size,

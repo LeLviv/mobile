@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
@@ -128,12 +129,12 @@ class _NavItemView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
+              SvgPicture.asset(
                 item.asset,
                 width: AppDimens.homeNavIconSize,
                 height: AppDimens.homeNavIconSize,
                 color: color,
-                colorBlendMode: BlendMode.srcIn,
+                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
               const SizedBox(height: 2),
               Text(
