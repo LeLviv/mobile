@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               TextField(
                 controller: _emailController,
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: AppStrings.emailaddress,
                   filled: true,
