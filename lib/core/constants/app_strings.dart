@@ -38,8 +38,6 @@ abstract final class AppStrings {
   static const loginError = 'Помилка авторизації';
 
   static const String greeting = 'вітаємо,';
-  static const String alertActive = 'Повітряна тривога!';
-  static const String alertNone = 'Тривоги немає';
   static const String alertMapButton = 'переглянути карту тривог';
   static const String weatherDetails = 'деталі';
   static const String outagesTitle = 'Відключення світла';
@@ -51,4 +49,10 @@ abstract final class AppStrings {
   static const String navForms = 'форми';
   static const String loadError = 'Не вдалося завантажити дані';
   static const String retry = 'Спробувати ще раз';
+
+  static const String alertActive = 'Повітряна тривога!';
+  static const String alertNone = 'Тривоги немає';
+  static const String alertClear = 'Відбій повітряної тривоги';
+  static const String alertRed = 'Червоний рівень небезпеки!';
+  static const String alertYellow = 'Жовтий рівень небезпеки!';
 }
