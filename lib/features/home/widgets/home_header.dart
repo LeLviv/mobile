@@ -1,55 +1,50 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_dimens.dart';
+import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_dimens.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/press_icon_button.dart';
 
 class HomeHeader extends StatelessWidget {
   final String userName;
+  final VoidCallback onAvatarTap;
   final VoidCallback onNotificationsTap;
 
   const HomeHeader({
     super.key,
     required this.userName,
+    required this.onAvatarTap,
     required this.onNotificationsTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Row(
       children: [
-        const CircleAvatar(
-          radius: AppDimens.avatarRadius,
-          backgroundColor: AppColors.primary,
-          child: Icon(Icons.person, color: AppColors.onPrimary),
+        PressIconButton(
+          asset: AppAssets.avatar,
+          size: AppDimens.avatarRadius * 2,
+          onTap: onAvatarTap,
         ),
-        const SizedBox(width: AppDimens.smallGap),
+        const SizedBox(width: AppDimens.homeHeaderGap),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                AppStrings.greeting,
-                style: textTheme.bodySmall?.copyWith(color: AppColors.primary),
-              ),
-              Text(
-                userName,
-                style: textTheme.titleMedium?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              const Text(AppStrings.greeting,
+                  style: AppTextStyles.homeGreeting),
+              Text(userName, style: AppTextStyles.homeUserName),
             ],
           ),
         ),
-        CircleAvatar(
-          radius: AppDimens.avatarRadius,
-          backgroundColor: AppColors.primary,
-          child: IconButton(
-            icon: const Icon(Icons.notifications_none,
-                color: AppColors.onPrimary),
-            onPressed: onNotificationsTap,
+        Transform.translate(
+          offset: const Offset(10, 0),
+          child: PressIconButton(
+            asset: AppAssets.bell,
+            pressedAsset: AppAssets.bellPressed,
+            size: AppDimens.homeBellRadius * 2,
+            toggle: true,
+            onTap: onNotificationsTap,
           ),
         ),
       ],

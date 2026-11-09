@@ -12,7 +12,7 @@ abstract final class AppStrings {
   static const noAccountTap = 'Натисни';
   static const noAccountRegister = 'тут щоб зареєструватися';
   static const loginSuccess = 'Вхід успішний';
-  static const fillAllFields = 'Заповніть електорнну скриньку і пароль';
+  static const fillAllFields = 'Заповніть електронну скриньку і пароль';
 
   static const registerTitle = 'Реєстрація';
   static const registerButton = 'зареєструватися';
@@ -44,7 +44,7 @@ abstract final class AppStrings {
   static const String weatherDetails = 'деталі';
   static const String outagesTitle = 'Відключення світла';
   static const String outagesEmpty = 'Відключень не заплановано';
-  static const String navTransport = 'транспорт';
+  static const String navTransport = 'рух';
   static const String navNews = 'новини';
   static const String navHome = 'дім';
   static const String navEvents = 'події';
