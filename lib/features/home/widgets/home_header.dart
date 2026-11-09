@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/constants/app_assets.dart';
+import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_dimens.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -31,8 +33,15 @@ class HomeHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(AppStrings.greeting,
-                  style: AppTextStyles.homeGreeting),
+              GestureDetector(
+                onTap: () =>
+                    Navigator.pushNamed(context, AppRoutes.usersettings),
+                behavior: HitTestBehavior.opaque,
+                child: const Text(
+                  AppStrings.greeting,
+                  style: AppTextStyles.homeGreeting,
+                ),
+              ),
               Text(userName, style: AppTextStyles.homeUserName),
             ],
           ),

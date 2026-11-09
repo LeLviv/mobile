@@ -35,6 +35,8 @@
 			<key>UIWindowSceneSessionRoleApplication</key>
 			<array>
 				<dict>
+				<key>NSPhotoLibraryUsageDescription</key>
+                <string>Потрібен доступ до фото, щоб обрати аватар</string>
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
