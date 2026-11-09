@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_svg: ^2.3.2
   google_fonts: ^9.0.0
   http: ^1.6.0
   firebase_core: ^5.1.0
@@ -22,3 +23,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Neucha
+      fonts:
+        - asset: assets/fonts/Neucha-Regular.ttf
+
+    - family: LibreFranklin
+      fonts:
+        - asset: assets/fonts/LibreFranklin-Black.ttf
+          weight: 900
