@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -11,14 +12,14 @@ class ProfileController extends ChangeNotifier {
   String _name = '';
   String _phone = '';
   String _email = '';
-  String _outageGroup = '';
+  List<String> _outageGroups = [];
   String? _token;
 
   File? get avatar => _avatar;
   String get name => _name;
   String get phone => _phone;
   String get email => _email;
-  String get outageGroup => _outageGroup;
+  List<String> get outageGroups => List.unmodifiable(_outageGroups);
   String? get token => _token;
 
   void setAvatar(File? value) {
@@ -51,19 +52,19 @@ class ProfileController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setOutageGroup(String value) {
-    if (_outageGroup == value) return;
-    _outageGroup = value;
+  void setOutageGroups(List<String> value) {
+    if (listEquals(_outageGroups, value)) return;
+    _outageGroups = List<String>.from(value);
     notifyListeners();
   }
 
   void clear() {
     _avatar = null;
     _name = '';
-    _token='';
+    _token = '';
     _phone = '';
     _email = '';
-    _outageGroup = '';
+    _outageGroups = [];
     notifyListeners();
   }
 }

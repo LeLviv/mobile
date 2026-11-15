@@ -18,26 +18,32 @@ const outageGroups = [
 ];
 
 Future<String?> showEditSheet(
-  BuildContext context, {
-  required String title,
-  required String initial,
-  TextInputType keyboard = TextInputType.text,
-  String? Function(String?)? validator,
-  List<TextInputFormatter>? inputFormatters,
-}) {
-  return showModalBottomSheet<String>(
+    BuildContext context, {
+      required String title,
+      required String initial,
+      TextInputType keyboard = TextInputType.text,
+      String? Function(String?)? validator,
+      List<TextInputFormatter>? inputFormatters,
+    }) {
+  return showDialog<String>(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: AppColors.homeCard,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-    ),
-    builder: (context) => _EditSheet(
-      title: title,
-      initial: initial,
-      keyboard: keyboard,
-      validator: validator,
-      inputFormatters: inputFormatters,
+    builder: (dialogContext) => Dialog(
+      backgroundColor: AppColors.homeCard,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28),
+        side: const BorderSide(
+          color: AppColors.homePrimary,
+          width: 1.5,
+        ),
+      ),
+      child: _EditSheet(
+        title: title,
+        initial: initial,
+        keyboard: keyboard,
+        validator: validator,
+        inputFormatters: inputFormatters,
+      ),
     ),
   );
 }
@@ -52,10 +58,10 @@ class _EditSheet extends StatefulWidget {
   });
 
   final String title;
-  final List<TextInputFormatter>? inputFormatters;
   final String initial;
   final TextInputType keyboard;
   final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<_EditSheet> createState() => _EditSheetState();
@@ -63,9 +69,9 @@ class _EditSheet extends StatefulWidget {
 
 class _EditSheetState extends State<_EditSheet> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _controller = TextEditingController(
-    text: widget.initial,
-  );
+
+  late final TextEditingController _controller =
+  TextEditingController(text: widget.initial);
 
   @override
   void dispose() {
@@ -81,12 +87,7 @@ class _EditSheetState extends State<_EditSheet> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        24,
-        24,
-        24,
-        24 + MediaQuery.viewInsetsOf(context).bottom,
-      ),
+      padding: const EdgeInsets.all(24),
       child: Form(
         key: _formKey,
         child: Column(
@@ -112,10 +113,9 @@ class _EditSheetState extends State<_EditSheet> {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton.icon(
+              child: ElevatedButton(
                 onPressed: _save,
-                icon: const Icon(Icons.check),
-                label: const Text(AppStrings.save),
+                child: const Text(AppStrings.save),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.loginAccent,
                   foregroundColor: Colors.white,
@@ -130,72 +130,142 @@ class _EditSheetState extends State<_EditSheet> {
   }
 }
 
-Future<String?> showGroupSheet(BuildContext context, String current) {
-  return showModalBottomSheet<String>(
+Future<List<String>?> showGroupSheet(
+    BuildContext context,
+    List<String> initial,
+    ) {
+  final selectedGroups = initial.toSet();
+
+  return showDialog<List<String>>(
     context: context,
-    backgroundColor: AppColors.homeCard,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-    ),
-    builder: (context) => SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            for (final group in outageGroups)
-              GestureDetector(
-                onTap: () => Navigator.pop(context, group),
-                child: Container(
-                  width: 72,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: group == current
-                        ? AppColors.loginAccent
-                        : AppColors.fieldSolid,
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(color: AppColors.loginAccent, width: 2),
+    builder: (dialogContext) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Dialog(
+            backgroundColor: AppColors.homeCard,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+              side: const BorderSide(
+                color: AppColors.homePrimary,
+                width: 1.5,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: outageGroups.map((group) {
+                      final isSelected = selectedGroups.contains(group);
+
+                      return FilterChip(
+                        label: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          child: Text(
+                            group,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.loginAccent,
+                            ),
+                          ),
+                        ),
+                        selected: isSelected,
+                        showCheckmark: false,
+                        onSelected: (selected) {
+                          setState(() {
+                            if (selected) {
+                              selectedGroups.add(group);
+                            } else {
+                              selectedGroups.remove(group);
+                            }
+                          });
+                        },
+                        backgroundColor: AppColors.homeCard,
+                        selectedColor: AppColors.homePrimary,
+                        shape: const StadiumBorder(),
+                        side: const BorderSide(
+                          color: AppColors.homePrimary,
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  child: Text(
-                    group,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: group == current
-                          ? Colors.white
-                          : AppColors.loginAccent,
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final sortedGroups = outageGroups
+                            .where((group) => selectedGroups.contains(group))
+                            .toList();
+
+                        Navigator.pop(context, sortedGroups);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.loginAccent,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                        ),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: const Text(AppStrings.save),
                     ),
                   ),
-                ),
+                ],
               ),
-          ],
-        ),
-      ),
-    ),
+            ),
+          );
+        },
+      );
+    },
   );
 }
 
 Future<bool> showConfirmDialog(
-  BuildContext context, {
-  required String title,
-  String? text,
-}) async {
+    BuildContext context, {
+      required String title,
+      String? text,
+    }) async {
   final result = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
       backgroundColor: AppColors.homeCard,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-      title: Text(title, style: const TextStyle(color: AppColors.loginAccent)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: AppColors.loginAccent,
+        ),
+      ),
       content: text == null
           ? null
-          : Text(text, style: const TextStyle(color: Colors.black)),
+          : Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black,
+        ),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
           child: const Text(
             AppStrings.cancel,
-            style: TextStyle(color: AppColors.loginAccent),
+            style: TextStyle(
+              color: AppColors.loginAccent,
+            ),
           ),
         ),
         TextButton(
@@ -211,5 +281,6 @@ Future<bool> showConfirmDialog(
       ],
     ),
   );
+
   return result ?? false;
 }

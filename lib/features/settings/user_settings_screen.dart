@@ -147,8 +147,13 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   }
 
   Future<void> _editGroup() async {
-    final result = await showGroupSheet(context, _profile.outageGroup);
-    if (result != null) _profile.setOutageGroup(result);
+    final result = await showGroupSheet(
+      context,
+      _profile.outageGroups,
+    );
+    if (result != null) {
+      _profile.setOutageGroups(result);
+    }
   }
 
   @override
@@ -265,10 +270,10 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                             ),
                             _InfoRow(
                               label: AppStrings.settingsOutageGroup,
-                              value: _profile.outageGroup.isEmpty
+                              value: _profile.outageGroups.isEmpty
                                   ? AppStrings.settingsChooseGroup
-                                  : _profile.outageGroup,
-                              muted: _profile.outageGroup.isEmpty,
+                                  : _profile.outageGroups.join(', '),
+                              muted: _profile.outageGroups.isEmpty,
                               fontScale: s,
                               onTap: _editGroup,
                             ),
