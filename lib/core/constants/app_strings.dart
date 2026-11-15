@@ -74,4 +74,5 @@ abstract final class AppStrings {
       'Усі ваші дані буде видалено без можливості відновлення.';
   static const cancel = 'скасувати';
   static const confirm = 'так';
+  static const avatarPickError = 'Не вдалося обрати фото. Перевірте доступ до галереї';
 }

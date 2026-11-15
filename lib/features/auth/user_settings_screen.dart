@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:flutter/services.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/profile/profile_controller.dart';
 import '../../core/theme/app_colors.dart';
@@ -29,13 +30,28 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   static final _phoneRegex = RegExp(r'^\d{12}$');
 
   Future<void> _pickAvatar() async {
-    final picked = await _picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 800,
-      imageQuality: 85,
+    try {
+      final picked = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800,
+        imageQuality: 85,
+      );
+      if (picked == null) return;
+      _profile.setAvatar(File(picked.path));
+    } on PlatformException catch (e) {
+      debugPrint('Pick avatar failed: ${e.code} ${e.message}');
+      _showAvatarError();
+    } catch (e) {
+      debugPrint('Pick avatar exception: $e');
+      _showAvatarError();
+    }
+  }
+
+  void _showAvatarError() {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text(AppStrings.avatarPickError)),
     );
-    if (picked == null) return;
-    _profile.setAvatar(File(picked.path));
   }
 
   Future<void> _editName() async {
