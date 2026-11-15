@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../core/profile/profile_controller.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/widgets/app_card.dart';
 import 'widgets/alert_card.dart';
 import 'widgets/home_header.dart';
 import 'widgets/weather_card.dart';
+import '../../core/constants/app_routes.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,10 +30,18 @@ class HomePage extends StatelessWidget {
             AppDimens.homeListBottomPadding,
           ),
           children: [
-            HomeHeader(
-              userName: _userName,
-              onNotificationsTap: () {},
-              onAvatarTap: () {},
+            ListenableBuilder(
+              listenable: ProfileController.instance,
+              builder: (context, _) {
+                final name = ProfileController.instance.name;
+
+                return HomeHeader(
+                  userName: name.isEmpty ? _userName : name,
+                  onNotificationsTap: () {},
+                  onAvatarTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.usersettings),
+                );
+              },
             ),
             const SizedBox(height: AppDimens.homeHeaderToAlertGap),
             const AlertCard(),
@@ -42,10 +53,7 @@ class HomePage extends StatelessWidget {
               onDetailsTap: () {},
             ),
             const SizedBox(height: AppDimens.homeWeatherToOutagesGap),
-            const AppCard(
-              solid: true,
-              height: AppDimens.homeOutagesCardHeight,
-            ),
+            const AppCard(solid: true, height: AppDimens.homeOutagesCardHeight),
           ],
         ),
         Positioned(
@@ -68,10 +76,7 @@ class HomePage extends StatelessWidget {
             child: Material(
               color: Colors.transparent,
               shape: const CircleBorder(),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () {},
-              ),
+              child: InkWell(customBorder: const CircleBorder(), onTap: () {}),
             ),
           ),
         ),
