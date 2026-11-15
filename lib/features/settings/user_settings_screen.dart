@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/profile/profile_controller.dart';
@@ -27,7 +28,6 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   bool _outages = true;
 
   static final _emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-  static final _phoneRegex = RegExp(r'^\d{12}$');
 
   Future<void> _pickAvatar() async {
     try {
@@ -50,9 +50,9 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
 
   void _showAvatarError() {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(AppStrings.avatarPickError)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text(AppStrings.avatarPickError)));
   }
 
   Future<void> _editName() async {
@@ -61,26 +61,40 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
       title: AppStrings.settingsEditName,
       initial: _profile.name,
       validator: (v) =>
-      (v ?? '').trim().length < 2 ? AppStrings.usernameTooShort : null,
+          (v ?? '').trim().length < 2 ? AppStrings.usernameTooShort : null,
     );
 
     if (result != null) _profile.setName(result);
   }
 
   Future<void> _editPhone() async {
+    final phoneMask = MaskTextInputFormatter(
+      mask: '+380 (##) ###-##-##',
+      filter: {"#": RegExp(r'[0-9]')},
+      initialText: _profile.phone,
+    );
+
     final result = await showEditSheet(
       context,
       title: AppStrings.settingsPhone,
-      initial: _profile.phone,
+      initial: phoneMask.getMaskedText(),
       keyboard: TextInputType.phone,
+      inputFormatters: [phoneMask],
       validator: (v) {
-        final text = (v ?? '').trim();
-        if (text.isEmpty || _phoneRegex.hasMatch(text)) return null;
-        return AppStrings.phoneOptionalInvalid;
+        final unmasked = phoneMask.getUnmaskedText();
+        if (unmasked.isEmpty) return null;
+        if (unmasked.length != 9) {
+          return 'Введіть номер повністю';
+        }
+        return null;
       },
     );
 
-    if (result != null) _profile.setPhone(result);
+    if (result != null) {
+      final unmasked = phoneMask.getUnmaskedText();
+
+      _profile.setPhone(unmasked.isEmpty ? '' : result.trim());
+    }
   }
 
   Future<void> _editEmail() async {
@@ -110,7 +124,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.login,
-          (route) => false,
+      (route) => false,
     );
   }
 
@@ -128,7 +142,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.login,
-          (route) => false,
+      (route) => false,
     );
   }
 

@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../constants/app_strings.dart';
 import '../theme/app_colors.dart';
 
 const outageGroups = [
-  '1.1', '1.2', '2.1', '2.2', '3.1', '3.2',
-  '4.1', '4.2', '5.1', '5.2',
+  '1.1',
+  '1.2',
+  '2.1',
+  '2.2',
+  '3.1',
+  '3.2',
+  '4.1',
+  '4.2',
+  '5.1',
+  '5.2',
 ];
 
 Future<String?> showEditSheet(
-    BuildContext context, {
-      required String title,
-      required String initial,
-      TextInputType keyboard = TextInputType.text,
-      String? Function(String?)? validator,
-    }) {
+  BuildContext context, {
+  required String title,
+  required String initial,
+  TextInputType keyboard = TextInputType.text,
+  String? Function(String?)? validator,
+  List<TextInputFormatter>? inputFormatters,
+}) {
   return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
@@ -27,6 +37,7 @@ Future<String?> showEditSheet(
       initial: initial,
       keyboard: keyboard,
       validator: validator,
+      inputFormatters: inputFormatters,
     ),
   );
 }
@@ -37,9 +48,11 @@ class _EditSheet extends StatefulWidget {
     required this.initial,
     required this.keyboard,
     required this.validator,
+    this.inputFormatters,
   });
 
   final String title;
+  final List<TextInputFormatter>? inputFormatters;
   final String initial;
   final TextInputType keyboard;
   final String? Function(String?)? validator;
@@ -50,8 +63,9 @@ class _EditSheet extends StatefulWidget {
 
 class _EditSheetState extends State<_EditSheet> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _controller =
-  TextEditingController(text: widget.initial);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initial,
+  );
 
   @override
   void dispose() {
@@ -92,6 +106,7 @@ class _EditSheetState extends State<_EditSheet> {
               autofocus: true,
               keyboardType: widget.keyboard,
               validator: widget.validator,
+              inputFormatters: widget.inputFormatters,
               onFieldSubmitted: (_) => _save(),
             ),
             const SizedBox(height: 16),
@@ -141,10 +156,7 @@ Future<String?> showGroupSheet(BuildContext context, String current) {
                         ? AppColors.loginAccent
                         : AppColors.fieldSolid,
                     borderRadius: BorderRadius.circular(100),
-                    border: Border.all(
-                      color: AppColors.loginAccent,
-                      width: 2,
-                    ),
+                    border: Border.all(color: AppColors.loginAccent, width: 2),
                   ),
                   child: Text(
                     group,
@@ -165,19 +177,16 @@ Future<String?> showGroupSheet(BuildContext context, String current) {
 }
 
 Future<bool> showConfirmDialog(
-    BuildContext context, {
-      required String title,
-      String? text,
-    }) async {
+  BuildContext context, {
+  required String title,
+  String? text,
+}) async {
   final result = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
       backgroundColor: AppColors.homeCard,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-      title: Text(
-        title,
-        style: const TextStyle(color: AppColors.loginAccent),
-      ),
+      title: Text(title, style: const TextStyle(color: AppColors.loginAccent)),
       content: text == null
           ? null
           : Text(text, style: const TextStyle(color: Colors.black)),
