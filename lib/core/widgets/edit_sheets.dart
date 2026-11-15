@@ -66,12 +66,12 @@ class _EditSheetState extends State<_EditSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
         24,
         24,
         24,
-        24 + MediaQuery.of(context).viewInsets.bottom,
+        24 + MediaQuery.viewInsetsOf(context).bottom,
       ),
       child: Form(
         key: _formKey,

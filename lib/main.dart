@@ -5,7 +5,7 @@ import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/login_screen.dart';
 import 'features/auth/register_screen.dart';
-import 'features/auth/user_settings_screen.dart';
+import 'features/settings/user_settings_screen.dart';
 import 'features/home/main_screen.dart';
 
 class AppScrollBehavior extends MaterialScrollBehavior {

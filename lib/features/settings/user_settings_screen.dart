@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:flutter/services.dart';
+
 import '../../core/constants/app_strings.dart';
 import '../../core/profile/profile_controller.dart';
 import '../../core/theme/app_colors.dart';
@@ -36,6 +36,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
         maxWidth: 800,
         imageQuality: 85,
       );
+
       if (picked == null) return;
       _profile.setAvatar(File(picked.path));
     } on PlatformException catch (e) {
@@ -62,6 +63,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
       validator: (v) =>
       (v ?? '').trim().length < 2 ? AppStrings.usernameTooShort : null,
     );
+
     if (result != null) _profile.setName(result);
   }
 
@@ -77,6 +79,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
         return AppStrings.phoneOptionalInvalid;
       },
     );
+
     if (result != null) _profile.setPhone(result);
   }
 
@@ -90,6 +93,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
           ? null
           : AppStrings.emailInvalid,
     );
+
     if (result != null) _profile.setEmail(result);
   }
 
@@ -98,7 +102,11 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
       context,
       title: AppStrings.settingsLogoutConfirm,
     );
+
     if (!ok || !mounted) return;
+
+    _profile.clear();
+
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.login,
@@ -112,7 +120,11 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
       title: AppStrings.settingsDeleteConfirmTitle,
       text: AppStrings.settingsDeleteConfirmText,
     );
+
     if (!ok || !mounted) return;
+
+    _profile.clear();
+
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.login,
@@ -132,7 +144,20 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.fieldSolid,
+      appBar: AppBar(
+        backgroundColor: AppColors.fieldSolid,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.loginAccent,
+          ),
+        ),
+      ),
       body: SafeArea(
+        top: false,
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: s.w(0.07)),
           child: Center(
@@ -143,16 +168,6 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                 builder: (context, _) {
                   return Column(
                     children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new,
-                            color: AppColors.loginAccent,
-                          ),
-                        ),
-                      ),
                       SizedBox(
                         width: avatarSize,
                         height: avatarSize,
