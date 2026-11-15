@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>CFBundleName</key>
+    <string>mobile</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Потрібен доступ до фото, щоб обрати аватар</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -35,8 +39,6 @@
 			<key>UIWindowSceneSessionRoleApplication</key>
 			<array>
 				<dict>
-				<key>NSPhotoLibraryUsageDescription</key>
-                <string>Потрібен доступ до фото, щоб обрати аватар</string>
 					<key>UISceneClassName</key>
 					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
