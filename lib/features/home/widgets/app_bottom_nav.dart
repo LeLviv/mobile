@@ -133,6 +133,7 @@ class _NavItemView extends StatelessWidget {
                 item.asset,
                 width: AppDimens.homeNavIconSize,
                 height: AppDimens.homeNavIconSize,
+                color: color,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
               const SizedBox(height: 2),

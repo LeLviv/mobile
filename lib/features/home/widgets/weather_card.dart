@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
@@ -43,13 +42,10 @@ class WeatherCard extends StatelessWidget {
                         AppDimens.homeTemperatureOffsetX,
                         AppDimens.homeTemperatureOffsetY,
                       ),
-                      child: Text(
-                        '$temperature',
-                        style: AppTextStyles.homeTemperature,
-                      ),
+                      child: Text('$temperature', style: AppTextStyles.homeTemperature),
                     ),
                     const Padding(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         top: AppDimens.homeDegreeTop,
                         left: AppDimens.homeDegreeLeft,
                       ),
@@ -99,34 +95,48 @@ class WeatherCard extends StatelessWidget {
 class _DetailsButton extends StatefulWidget {
   final VoidCallback onPressed;
 
-  const _DetailsButton({required this.onPressed});
+  final bool toggle;
+
+  const _DetailsButton({required this.onPressed, this.toggle = true});
+
   @override
   State<_DetailsButton> createState() => _DetailsButtonState();
 }
 
 class _DetailsButtonState extends State<_DetailsButton> {
+  bool _pressed = false;
   bool _active = false;
 
+  void _setPressed(bool value) {
+    if (widget.toggle) return;
+    if (_pressed != value) setState(() => _pressed = value);
+  }
+
   void _handleTap() {
-    setState(() => _active = !_active);
+    if (widget.toggle) setState(() => _active = !_active);
     widget.onPressed();
   }
 
   @override
   Widget build(BuildContext context) {
-    final highlighted = _active;
+    final highlighted = widget.toggle ? _active : _pressed;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
       onTap: _handleTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         height: AppDimens.buttonHeightCompact,
         padding: const EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
-          color: highlighted ? AppColors.homeBackground : AppColors.homePrimary,
-          borderRadius: BorderRadius.circular(
-            AppDimens.homeDetailsButtonRadius,
-          ),
+          color: highlighted
+              ? AppColors.homeBackground
+              : AppColors.homePrimary,
+          borderRadius:
+          BorderRadius.circular(AppDimens.homeDetailsButtonRadius),
           border: Border.all(
             color: AppColors.homePrimary,
             width: AppDimens.homeDetailsBorderWidth,
