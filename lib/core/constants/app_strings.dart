@@ -50,6 +50,30 @@ abstract final class AppStrings {
   static const String loadError = 'Не вдалося завантажити дані';
   static const String retry = 'Спробувати ще раз';
 
+  static const save = 'зберегти';
+  static const settingsAddPhone = 'додати номер (необов\'язково)';
+  static const settingsAddEmail = 'додати емейл';
+  static const settingsChooseGroup = 'обрати групу';
+  static const settingsEditName = 'Прізвище та ім\'я';
+  static const phoneOptionalInvalid = 'Номер має містити 12 цифр або бути порожнім';
+
+  static const settingsDefaultName = 'Прізвище ім\'я';
+  static const settingsPhone = 'номер телефону';
+  static const settingsEmail = 'емейл';
+  static const settingsOutageGroup = 'група відключення';
+  static const settingsNotifications = 'Сповіщення';
+  static const settingsAirAlert = 'повітряна тривога';
+  static const settingsOutages = 'відключення світла';
+  static const settingsLogout = 'вийти з акаунту';
+  static const settingsDeleteAccount = 'видалити акаунт';
+  static const settingsLogoutConfirm = 'Вийти з акаунту?';
+  static const settingsDeleteConfirmTitle = 'Видалити акаунт?';
+  static const settingsDeleteConfirmText =
+      'Усі ваші дані буде видалено без можливості відновлення.';
+  static const cancel = 'скасувати';
+  static const confirm = 'так';
+  static const avatarPickError = 'Не вдалося обрати фото. Перевірте доступ до галереї';
+
   static const String alertActive = 'Повітряна тривога!';
   static const String alertNone = 'Тривоги немає';
   static const String alertClear = 'Відбій повітряної тривоги';
