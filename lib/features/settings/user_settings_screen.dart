@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:mobile/features/air_raid/air_raid_notifications.dart';
 
 import '../../core/constants/app_strings.dart';
 import '../../core/profile/profile_controller.dart';
@@ -23,11 +24,57 @@ class UserSettingsScreen extends StatefulWidget {
 class _UserSettingsScreenState extends State<UserSettingsScreen> {
   final _picker = ImagePicker();
   final _profile = ProfileController.instance;
+  final _airRaidService = AirRaidNotificationService.instance;
 
   bool _airAlert = true;
+  bool _isLoadingAirAlert = true;
+  bool _isUpdatingAirAlert = false;
   bool _outages = true;
 
   static final _emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationSettings();
+  }
+
+  Future<void> _loadNotificationSettings() async {
+    try {
+      final enabled = await _airRaidService.isAirAlertEnabled();
+      if (!mounted) return;
+      setState(() {
+        _airAlert = enabled;
+        _isLoadingAirAlert = false;
+      });
+    } catch (e) {
+      debugPrint('Failed to load air alert setting: $e');
+      if (!mounted) return;
+      setState(() => _isLoadingAirAlert = false);
+    }
+  }
+
+  Future<void> _toggleAirAlert(bool value) async {
+    if (_isLoadingAirAlert || _isUpdatingAirAlert) return;
+
+    final previous = _airAlert;
+    setState(() {
+      _airAlert = value;
+      _isUpdatingAirAlert = true;
+    });
+
+    try {
+      await _airRaidService.setAirAlertEnabled(value);
+    } catch (e) {
+      debugPrint('Failed to update air alert subscription: $e');
+      if (!mounted) return;
+      setState(() => _airAlert = previous);
+    } finally {
+      if (mounted) {
+        setState(() => _isUpdatingAirAlert = false);
+      }
+    }
+  }
 
   Future<void> _pickAvatar() async {
     try {
@@ -147,10 +194,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   }
 
   Future<void> _editGroup() async {
-    final result = await showGroupSheet(
-      context,
-      _profile.outageGroups,
-    );
+    final result = await showGroupSheet(context, _profile.outageGroups);
     if (result != null) {
       _profile.setOutageGroups(result);
     }
@@ -299,7 +343,10 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                               label: AppStrings.settingsAirAlert,
                               value: _airAlert,
                               fontScale: s,
-                              onChanged: (v) => setState(() => _airAlert = v),
+                              onChanged:
+                                  (_isLoadingAirAlert || _isUpdatingAirAlert)
+                                  ? null
+                                  : _toggleAirAlert,
                             ),
                             _SwitchRow(
                               label: AppStrings.settingsOutages,
@@ -451,7 +498,7 @@ class _SwitchRow extends StatelessWidget {
   final String label;
   final bool value;
   final AppScale fontScale;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -475,9 +522,12 @@ class _SwitchRow extends StatelessWidget {
             activeTrackColor: AppColors.loginAccent,
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: AppColors.fieldSolid,
-            trackOutlineColor: const WidgetStatePropertyAll(
-              AppColors.loginAccent,
-            ),
+            trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return AppColors.loginAccent.withValues(alpha: 0.4);
+              }
+              return AppColors.loginAccent;
+            }),
           ),
         ],
       ),
