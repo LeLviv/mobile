@@ -9,6 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_scale.dart';
 import '../../core/widgets/loading_dots.dart';
+import '../../core/storage/token_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -64,6 +65,23 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint('Login response: ${response.body}');
+
+        final data =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        final token = (data['token'] ??
+            data['accessToken'] ??
+            data['access_token']) as String?;
+
+        if (token == null) {
+          debugPrint('Login: токен не знайдено у відповіді');
+          _showMessage(AppStrings.loginError);
+          return;
+        }
+
+        await TokenStorage.save(token);
+        if (!mounted) return;
+
         _showMessage(AppStrings.loginSuccess);
 
         Navigator.pushNamedAndRemoveUntil(
