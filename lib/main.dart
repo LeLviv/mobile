@@ -22,20 +22,18 @@ class AppScrollBehavior extends MaterialScrollBehavior {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
 
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingHandler);
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingHandler);
 
-  final notificationService = NotificationService.instance;
-  await notificationService.initializeLocalNotifications();
-  await notificationService.setupFCM();
-
-  const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  const InitializationSettings initializationSettings =
-  InitializationSettings(android: initializationSettingsAndroid);
+    final notificationService = NotificationService.instance;
+    await notificationService.initializeLocalNotifications();
+    await notificationService.setupFCM();
+  } catch (e) {
+    print(e);
+  }
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,

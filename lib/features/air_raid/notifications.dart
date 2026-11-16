@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -15,16 +17,19 @@ Future<void> firebaseMessagingHandler(RemoteMessage message) async {
 
 class NotificationService {
   NotificationService._internal();
+
   static final NotificationService instance = NotificationService._internal();
 
   final FlutterLocalNotificationsPlugin _localNotifications =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   static const String _channelId = 'air_raid_alerts_channel';
   static const String _channelName = 'Air Raid Alerts';
 
   Future<void> initializeLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const darwinSettings = DarwinInitializationSettings();
 
     const initializationSettings = InitializationSettings(
@@ -48,7 +53,8 @@ class NotificationService {
 
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(androidChannel);
   }
 
@@ -70,12 +76,22 @@ class NotificationService {
         sound: true,
       );
 
+      if (Platform.isIOS) {
+        String? apnsToken = await messaging.getAPNSToken();
+        if (apnsToken == null) {
+          await Future<void>.delayed(const Duration(seconds: 3));
+          apnsToken = await messaging.getAPNSToken();
+        }
+      }
+
       await messaging.subscribeToTopic('air_raid_alert');
     }
 
     // Foreground listener
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      handleDataPayload(message.data);
+      if (message.notification == null) {
+        handleDataPayload(message.data);
+      }
     });
 
     // Handle user tapping notification when app is in background
@@ -95,6 +111,14 @@ class NotificationService {
     final String? status = data['status']?.toString();
     final String? time = data['time']?.toString();
 
+    String displayTime;
+    if (time == null) {
+      DateTime now = DateTime.now();
+      displayTime = '${now.hour.toString()}:${now.minute.toString()}';
+    } else {
+      displayTime = time;
+    }
+
     String title = AppStrings.alertActive;
     String body = AppStrings.alertClear;
 
@@ -111,13 +135,12 @@ class NotificationService {
           body = AppStrings.alertNone;
           break;
       }
+    } else {
+      title = type.toString();
+      body = status.toString();
     }
 
-    showCustomNotification(
-      id: 1, // Using fixed ID updates existing alert rather than stacking duplicates
-      title: '$time $title',
-      body: body,
-    );
+    showCustomNotification(id: 1, title: '$displayTime $title', body: body);
   }
 
   Future<void> showCustomNotification({

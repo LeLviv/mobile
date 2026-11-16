@@ -12,7 +12,7 @@ dependencies {
 
 android {
     namespace = "com.lelviv.mobile"
-    compileSdk = 37
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
