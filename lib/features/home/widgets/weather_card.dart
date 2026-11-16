@@ -24,67 +24,76 @@ class WeatherCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppCard(
-          solid: true,
-          width: AppDimens.homeWeatherCardSize,
-          height: AppDimens.homeWeatherCardSize,
-          child: Stack(
-            children: [
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Transform.translate(
-                      offset: const Offset(
-                        AppDimens.homeTemperatureOffsetX,
-                        AppDimens.homeTemperatureOffsetY,
-                      ),
-                      child: Text('$temperature', style: AppTextStyles.homeTemperature),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppCard(
+              solid: true,
+              width: AppDimens.homeWeatherCardSize,
+              height: AppDimens.homeWeatherCardSize,
+              child: Stack(
+                children: [
+                  Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Transform.translate(
+                          offset: const Offset(
+                            AppDimens.homeTemperatureOffsetX,
+                            AppDimens.homeTemperatureOffsetY,
+                          ),
+                          child: Text(
+                            '$temperature',
+                            style: AppTextStyles.homeTemperature,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(
+                            top: AppDimens.homeDegreeTop,
+                            left: AppDimens.homeDegreeLeft,
+                          ),
+                          child: Text('°', style: AppTextStyles.homeDegree),
+                        ),
+                      ],
                     ),
-                    const Padding(
-                      padding: const EdgeInsets.only(
-                        top: AppDimens.homeDegreeTop,
-                        left: AppDimens.homeDegreeLeft,
-                      ),
-                      child: Text('°', style: AppTextStyles.homeDegree),
+                  ),
+                  Positioned(
+                    top: 14,
+                    left: 12,
+                    child: SvgPicture.asset(
+                      AppAssets.sun,
+                      width: AppDimens.homeSunSize,
+                      height: AppDimens.homeSunSize,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Positioned(
-                top: 8,
-                left: 12,
-                child: SvgPicture.asset(
-                  AppAssets.sun,
-                  width: AppDimens.homeSunSize,
-                  height: AppDimens.homeSunSize,
-                ),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: AppDimens.homeWeatherButtonGap),
+            _DetailsButton(onPressed: onDetailsTap),
+          ],
         ),
         const SizedBox(width: AppDimens.homeWeatherTextGap),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Transform.scale(
-                scaleX: 0.9,
-                scaleY: 0.8,
-                alignment: Alignment.centerLeft,
-                child: Text(title, style: AppTextStyles.homeWeatherTitle),
-              ),
-              const SizedBox(height: 2),
-              Text(advice, style: AppTextStyles.homeWeatherAdvice),
-              const SizedBox(height: 1),
-              Align(
-                alignment: Alignment.centerRight,
-                child: _DetailsButton(onPressed: onDetailsTap),
-              ),
-            ],
+          child: SizedBox(
+            height: AppDimens.homeWeatherCardSize,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Transform.scale(
+                  scaleX: 0.9,
+                  scaleY: 0.8,
+                  alignment: Alignment.centerLeft,
+                  child: Text(title, style: AppTextStyles.homeWeatherTitle),
+                ),
+                const SizedBox(height: 4),
+                Text(advice, style: AppTextStyles.homeWeatherAdvice),
+              ],
+            ),
           ),
         ),
       ],
