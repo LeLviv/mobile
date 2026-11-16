@@ -52,6 +52,19 @@ abstract final class AppStrings {
   static const String loadError = 'Не вдалося завантажити дані';
   static const String retry = 'Спробувати ще раз';
 
+  static const String weatherClear = 'СОНЯЧНО';
+  static const String weatherPartlyCloudy = 'МАЛОХМАРНО';
+  static const String weatherCloudy = 'ХМАРНО';
+  static const String weatherFog = 'ТУМАН';
+  static const String weatherDrizzle = 'МРЯКА';
+  static const String weatherRain = 'ДОЩ';
+  static const String weatherSnow = 'СНІГ';
+  static const String weatherThunderstorm = 'ГРОЗА';
+  static const String weatherUnknown = 'ПОГОДА';
+
+  static const String adviceFallback = 'гарного вам дня';
+  static const String weatherLoadError = 'Не вдалося завантажити погоду. Торкніться, щоб спробувати ще раз';
+
   static const save = 'зберегти';
   static const settingsAddPhone = 'додати номер (необов\'язково)';
   static const settingsAddEmail = 'додати емейл';
