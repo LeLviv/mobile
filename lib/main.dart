@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mobile/core/notifications/notification_service.dart';
 import 'package:mobile/features/air_raid/air_raid_notifications.dart';
+import 'package:mobile/firebase_options.dart';
 
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
@@ -40,7 +41,7 @@ class AppScrollBehavior extends MaterialScrollBehavior {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingHandler);
   try {
     final notificationService = NotificationService.instance;
@@ -49,7 +50,7 @@ void main() async {
       onDataReceived: routePushPayload,
     );
     if (authorized) {
-      AirRaidNotificationService.instance.syncSubscription();
+      await AirRaidNotificationService.instance.syncSubscription();
     }
   } catch (e, stackTrace) {
     debugPrint('Notification initialization failed: $e\n$stackTrace');

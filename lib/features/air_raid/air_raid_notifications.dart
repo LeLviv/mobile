@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:mobile/core/constants/app_strings.dart';
 import 'package:mobile/core/notifications/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,10 +68,13 @@ class AirRaidNotificationService {
         title = AppStrings.alertActive;
         body = AppStrings.alertYellow;
         break;
-      default:
+      case 'NONE':
         title = AppStrings.alertClear;
         body = AppStrings.alertNone;
         break;
+      default:
+        debugPrint('WARNING: Received invalid air raid status');
+        return;
     }
 
     await _notificationService.showNotification(
