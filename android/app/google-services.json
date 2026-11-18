@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "907948915101",
+    "project_id": "lelviv",
+    "storage_bucket": "lelviv.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907948915101:android:e48c313d0782802da71774",
+        "android_client_info": {
+          "package_name": "com.lelviv.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9HWTxnWpearL3rrKDwSa7NRTCeKtz5nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
