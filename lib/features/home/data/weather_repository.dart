@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/app_location.dart';
 import '../../../core/network/api_endpoints.dart';
@@ -9,19 +8,25 @@ import '../models/weather_info.dart';
 class WeatherRepository {
   static const _timeout = Duration(seconds: 10);
 
+  final http.Client _client;
+  final TokenStorage _tokenStorage;
+
+  WeatherRepository({
+    http.Client? client,
+    TokenStorage? tokenStorage,
+  })  : _client = client ?? http.Client(),
+        _tokenStorage = tokenStorage ?? TokenStorage();
+
   Future<WeatherInfo> fetchCurrent() async {
     final uri = ApiEndpoints.weatherHourly(AppLocation.lvivRegion);
-    final token = await TokenStorage.read();
+    final token = await _tokenStorage.read();
 
-    final response = await http.get(
+    final response = await _client.get(
       uri,
       headers: {
         if (token != null) 'Authorization': 'Bearer $token',
       },
     ).timeout(_timeout);
-
-    debugPrint('Weather request: $uri');
-    debugPrint('Weather response body: ${response.body}');
 
     if (response.statusCode != 200) {
       throw Exception('Weather request failed: ${response.statusCode}');

@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _tokenStorage = TokenStorage();
 
   bool _isLoading = false;
 
@@ -65,8 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('Login response: ${response.body}');
-
         final data =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         final token = (data['token'] ??
@@ -79,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return;
         }
 
-        await TokenStorage.save(token);
+        await _tokenStorage.save(token);
         if (!mounted) return;
 
         _showMessage(AppStrings.loginSuccess);
@@ -90,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
               (route) => false,
         );
       } else {
-        debugPrint('Login failed: ${response.statusCode} ${response.body}');
+        debugPrint('Login failed: ${response.statusCode}');
         _showMessage(AppStrings.loginError);
       }
     } catch (e) {

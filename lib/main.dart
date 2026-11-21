@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/lviv_time.dart';
 import 'features/auth/login_screen.dart';
 import 'features/auth/register_screen.dart';
-import 'features/settings/user_settings_screen.dart';
 import 'features/home/main_screen.dart';
+import 'features/settings/user_settings_screen.dart';
 
 class AppScrollBehavior extends MaterialScrollBehavior {
   @override
@@ -18,6 +19,9 @@ class AppScrollBehavior extends MaterialScrollBehavior {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  LvivTime.init();
+
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light,
