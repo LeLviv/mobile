@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
           final weather = snapshot.data!;
           return WeatherCard(
             temperature: weather.roundedTemperature,
-            title: WeatherTexts.title(weather.condition),
+            title: weather.condition.title,
             advice: WeatherTexts.advice(weather),
             onDetailsTap: () {},
           );

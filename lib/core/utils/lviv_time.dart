@@ -1,18 +1,18 @@
+import 'package:timezone/data/latest.dart' as tzdata;
+import 'package:timezone/timezone.dart' as tz;
+
 abstract final class LvivTime {
-  static DateTime now() {
-    final utc = DateTime.now().toUtc();
-    return utc.add(Duration(hours: _isSummerTime(utc) ? 3 : 2));
+  static const _zone = 'Europe/Kyiv';
+  static bool _initialized = false;
+
+  static void init() {
+    if (_initialized) return;
+    tzdata.initializeTimeZones();
+    _initialized = true;
   }
 
-  static bool _isSummerTime(DateTime utc) {
-    final start = DateTime.utc(utc.year, 3, _lastSunday(utc.year, 3), 1);
-    final end = DateTime.utc(utc.year, 10, _lastSunday(utc.year, 10), 1);
-    return !utc.isBefore(start) && utc.isBefore(end);
-  }
-
-  static int _lastSunday(int year, int month) {
-    final lastDay = DateTime.utc(year, month + 1, 0).day;
-    final weekday = DateTime.utc(year, month, lastDay).weekday;
-    return lastDay - (weekday % 7);
+  static tz.TZDateTime now() {
+    init();
+    return tz.TZDateTime.now(tz.getLocation(_zone));
   }
 }
