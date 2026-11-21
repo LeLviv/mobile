@@ -7,4 +7,10 @@ class ApiEndpoints {
 
   static Uri get authenticate => Uri.parse('$_baseUrl/auth/authenticate');
   static Uri get register => Uri.parse('$_baseUrl/auth/register');
+
+  static Uri weatherDaily(String region) => Uri.parse('$_baseUrl/weather/daily')
+          .replace(queryParameters: {'region': region});
+
+  static Uri weatherHourly(String region) => Uri.parse('$_baseUrl/weather/hourly')
+          .replace(queryParameters: {'region': region});
 }

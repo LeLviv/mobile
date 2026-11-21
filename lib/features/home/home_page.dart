@@ -1,22 +1,79 @@
 import 'package:flutter/material.dart';
 import '../../core/profile/profile_controller.dart';
-
+import '../../core/constants/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_card.dart';
+import 'data/weather_repository.dart';
+import 'data/weather_texts.dart';
+import 'models/weather_info.dart';
 import 'widgets/alert_card.dart';
 import 'widgets/home_header.dart';
 import 'widgets/weather_card.dart';
 import '../../core/constants/app_routes.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   static const String _userName = "Прізвище Ім'я";
-  static const int _temperature = 18;
-  static const String _weatherTitle = 'СОНЯЧНО';
-  static const String _weatherAdvice =
-      'одягайтеся легко, чудовий час для пальта та шпацеру з коліжанками';
+
+  final WeatherRepository _weatherRepository = WeatherRepository();
+  late Future<WeatherInfo> _weather;
+
+  @override
+  void initState() {
+    super.initState();
+    _weather = _weatherRepository.fetchCurrent();
+  }
+
+  void _reloadWeather() {
+    setState(() => _weather = _weatherRepository.fetchCurrent());
+  }
+
+  Widget _buildWeather() {
+    return FutureBuilder<WeatherInfo>(
+      future: _weather,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final weather = snapshot.data!;
+          return WeatherCard(
+            temperature: weather.roundedTemperature,
+            title: weather.condition.title,
+            advice: WeatherTexts.advice(weather),
+            onDetailsTap: () {},
+          );
+        }
+
+        if (snapshot.hasError) {
+          debugPrint('Weather error: ${snapshot.error}');
+        }
+
+        return SizedBox(
+          height: AppDimens.homeWeatherCardSize,
+          child: Center(
+            child: snapshot.hasError
+                ? GestureDetector(
+              onTap: _reloadWeather,
+              child: const Text(
+                AppStrings.weatherLoadError,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.homeWeatherAdvice,
+              ),
+            )
+                : const CircularProgressIndicator(
+              color: AppColors.homePrimary,
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +103,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: AppDimens.homeHeaderToAlertGap),
             const AlertCard(),
             const SizedBox(height: AppDimens.homeAlertToWeatherGap),
-            WeatherCard(
-              temperature: _temperature,
-              title: _weatherTitle,
-              advice: _weatherAdvice,
-              onDetailsTap: () {},
-            ),
+            _buildWeather(),
             const SizedBox(height: AppDimens.homeWeatherToOutagesGap),
             const AppCard(solid: true, height: AppDimens.homeOutagesCardHeight),
           ],

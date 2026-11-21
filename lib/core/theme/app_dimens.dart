@@ -30,10 +30,11 @@ abstract final class AppDimens {
   static const double homeGreetingGap = 0;
   static const double homeSunSize = 64;
   static const double homeWeatherTextGap = 25;
+  static const double homeWeatherButtonGap = 16;
   static const double homeTemperatureOffsetX = 6;
   static const double homeTemperatureOffsetY = 20;
   static const double homeDegreeTop = 12;
-  static const double homeDegreeLeft = 1;
+  static const double homeDegreeLeft = 3;
   static const double homeNavIconSize = 30;
   static const int homeNavAnimationMs = 700;
   static const double homeNavInnerPadding = 8;
