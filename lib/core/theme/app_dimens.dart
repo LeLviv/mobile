@@ -65,4 +65,13 @@ abstract final class AppDimens {
   static const double fieldPaddingV = 14;
   static const double hintSize = 20;
   static const double buttonRadius = 24;
+
+  static const double homeAlertPadding = 12;
+  static const double homeAlertGap = 9;
+  static const double homeAlertDividerWidth = 30;
+  static const double homeAlertDividerHeight = 2.1;
+  static const double homeAlertTitleFactor = 0.08;
+  static const double homeAlertBodyFactor = 0.042;
+  static const int homeAlertImageFlex = 5;
+  static const int homeAlertTextFlex = 6;
 }

@@ -30,4 +30,10 @@ abstract final class AppColors {
   static const homeSun = Color(0xFFFAAF66);
   static const homeShadow = Color(0x40D64027);
   static const homeNavCircleShadow = Color(0x59000000);
+
+  static const homeAlertCalmBackground = Color(0xFFFEF1EA);
+  static const homeAlertCalmTitle = Color(0xFFD64027);
+
+  static const homeAlertActiveBackground = Color(0xFFD64027);
+  static const homeAlertActiveTitle = Color(0xFFFDDDCD);
 }

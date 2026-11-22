@@ -13,4 +13,6 @@ class ApiEndpoints {
 
   static Uri weatherHourly(String region) => Uri.parse('$_baseUrl/weather/hourly')
           .replace(queryParameters: {'region': region});
+
+  static Uri get airRaidStatus => Uri.parse('$_baseUrl/air-raid');
 }
