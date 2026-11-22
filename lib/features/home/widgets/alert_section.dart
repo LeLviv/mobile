@@ -23,6 +23,7 @@ class _AlertSectionState extends State<AlertSection>
   static const Duration _refreshInterval = Duration(minutes: 1);
 
   late final AlertRepository _repository;
+  late final bool _ownsRepository;
   Timer? _timer;
   AlertStatus? _status;
   bool _failed = false;
@@ -30,22 +31,42 @@ class _AlertSectionState extends State<AlertSection>
   @override
   void initState() {
     super.initState();
+    _ownsRepository = widget.repository == null;
     _repository = widget.repository ?? AlertRepository();
     WidgetsBinding.instance.addObserver(this);
     _load();
-    _timer = Timer.periodic(_refreshInterval, (_) => _load());
+    _startTimer();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _stopTimer();
     WidgetsBinding.instance.removeObserver(this);
+    if (_ownsRepository) _repository.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _load();
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _load();
+        _startTimer();
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        _stopTimer();
+    }
+  }
+
+  void _startTimer() {
+    _timer ??= Timer.periodic(_refreshInterval, (_) => _load());
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
   }
 
   Future<void> _load() async {

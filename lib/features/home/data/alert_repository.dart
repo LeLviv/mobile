@@ -10,10 +10,13 @@ class AlertRepository {
   final http.Client _client;
   final TokenStorage _tokenStorage;
 
+  final bool _ownsClient;
+
   AlertRepository({
     http.Client? client,
     TokenStorage? tokenStorage,
   })  : _client = client ?? http.Client(),
+        _ownsClient = client == null,
         _tokenStorage = tokenStorage ?? TokenStorage();
 
   Future<AlertStatus> fetchStatus() async {
@@ -35,5 +38,9 @@ class AlertRepository {
       throw const FormatException('Alert status is unknown');
     }
     return status;
+  }
+
+  void dispose() {
+    if (_ownsClient) _client.close();
   }
 }
