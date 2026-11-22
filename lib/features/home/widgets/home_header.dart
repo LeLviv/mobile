@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/profile/profile_controller.dart';
 import '../../../core/theme/app_dimens.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/press_icon_button.dart';
@@ -23,6 +24,7 @@ class HomeHeader extends StatelessWidget {
       children: [
         PressIconButton(
           asset: AppAssets.avatar,
+          image: ProfileController.instance.avatar,
           size: AppDimens.avatarRadius * 2,
           onTap: onAvatarTap,
         ),
