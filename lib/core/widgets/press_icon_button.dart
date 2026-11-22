@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
-import 'dart:io';
 
 class PressIconButton extends StatefulWidget {
   final String asset;
   final String? pressedAsset;
   final double size;
-  final File? image;
   final VoidCallback? onTap;
 
   final bool toggle;
@@ -19,7 +18,6 @@ class PressIconButton extends StatefulWidget {
     required this.asset,
     required this.size,
     this.pressedAsset,
-    this.image,
     this.onTap,
     this.toggle = false,
     this.onToggle,
@@ -76,31 +74,11 @@ class _PressIconButtonState extends State<PressIconButton> {
                 ],
               ),
             ),
-            if (widget.image == null)
-              SvgPicture.asset(
-                widget.asset,
-                width: widget.size,
-                height: widget.size,
-              )
-            else
-              ClipOval(
-                child: SizedBox(
-                  width: widget.size,
-                  height: widget.size,
-                  child: Padding(
-                    padding: EdgeInsets.all(widget.size * 0.12),
-                    child: ClipOval(
-                      child: Image.file(
-                        widget.image!,
-                        width: widget.size,
-                        height: widget.size,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            SvgPicture.asset(
+              widget.asset,
+              width: widget.size,
+              height: widget.size,
+            ),
             if (widget.pressedAsset != null)
               AnimatedOpacity(
                 opacity: showPressed ? 1 : 0,

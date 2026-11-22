@@ -236,7 +236,11 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                         height: avatarSize,
                         child: Stack(
                           children: [
-                            ProfileAvatar(size: avatarSize, shadow: true),
+                            ProfileAvatar(
+                              size: avatarSize,
+                              avatar: _profile.avatar,
+                              shadow: true,
+                            ),
                             Positioned(
                               right: 0,
                               bottom: 0,
