@@ -10,4 +10,6 @@ abstract final class AppAssets {
   static const navHome = '$_images/nav_home.svg';
   static const navEvents = '$_images/nav_events.svg';
   static const navForms = '$_images/nav_forms.svg';
+  static const alertCalm = '$_images/alert_calm.svg';
+  static const alertActive = '$_images/alert_active.svg';
 }

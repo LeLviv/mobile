@@ -10,12 +10,18 @@ class WeatherRepository {
 
   final http.Client _client;
   final TokenStorage _tokenStorage;
+  final bool _ownsClient;
 
   WeatherRepository({
     http.Client? client,
     TokenStorage? tokenStorage,
   })  : _client = client ?? http.Client(),
+        _ownsClient = client == null,
         _tokenStorage = tokenStorage ?? TokenStorage();
+
+  void dispose() {
+    if (_ownsClient) _client.close();
+  }
 
   Future<WeatherInfo> fetchCurrent() async {
     final uri = ApiEndpoints.weatherHourly(AppLocation.lvivRegion);
