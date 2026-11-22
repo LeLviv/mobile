@@ -62,4 +62,7 @@ abstract final class AppTextStyles {
     fontFamily: _font,
     fontSize: 10,
   );
+
+  static const homeAlertTitle = TextStyle(height: 1);
+  static const homeAlertBody = TextStyle(height: 1.2);
 }

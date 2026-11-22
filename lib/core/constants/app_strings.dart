@@ -92,4 +92,12 @@ abstract final class AppStrings {
   static const String alertClear = 'Відбій повітряної тривоги';
   static const String alertRed = 'Червоний рівень небезпеки!';
   static const String alertYellow = 'Жовтий рівень небезпеки!';
+
+  static const String alertCalmTitle = 'все спокійно';
+  static const String alertCalmLine1 = 'каву наливають';
+  static const String alertCalmLine2 = 'повітряної тривоги \nнемає';
+  static const String alertActiveTitle = 'тривога';
+  static const String alertActiveLine1 = 'хвіст піджали';
+  static const String alertActiveLine2 = 'в укриття \nшвиденько загнали';
+  static const String alertLoadError = 'Не вдалося дізнатися статус тривоги. Торкніться, щоб спробувати ще раз';
 }

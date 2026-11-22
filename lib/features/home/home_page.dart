@@ -8,10 +8,10 @@ import '../../core/widgets/app_card.dart';
 import 'data/weather_repository.dart';
 import 'data/weather_texts.dart';
 import 'models/weather_info.dart';
-import 'widgets/alert_card.dart';
 import 'widgets/home_header.dart';
 import 'widgets/weather_card.dart';
 import '../../core/constants/app_routes.dart';
+import 'widgets/alert_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             const SizedBox(height: AppDimens.homeHeaderToAlertGap),
-            const AlertCard(),
+            const AlertSection(),
             const SizedBox(height: AppDimens.homeAlertToWeatherGap),
             _buildWeather(),
             const SizedBox(height: AppDimens.homeWeatherToOutagesGap),
