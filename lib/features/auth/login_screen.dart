@@ -10,6 +10,7 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_scale.dart';
 import '../../core/widgets/loading_dots.dart';
 import '../../core/storage/token_storage.dart';
+import '../../core/profile/profile_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -65,9 +66,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data =
-        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final profile = ProfileController.instance;
+
+        final name = data['visibleName'] as String?;
+        if (name != null && name.isNotEmpty) {
+          profile.setName(name);
+        }
+
+        profile.setEmail(_emailController.text.trim());
+
         final token = (data['token'] ??
             data['accessToken'] ??
             data['access_token']) as String?;
@@ -81,9 +91,36 @@ class _LoginScreenState extends State<LoginScreen> {
         await _tokenStorage.save(token);
         if (!mounted) return;
 
+        profile.setToken(token);
+
+        try {
+          final usernameResponse = await http.get(
+            ApiEndpoints.username,
+            headers: {
+              'Authorization': 'Bearer $token',
+            },
+          );
+
+          if (usernameResponse.statusCode == 200) {
+            final username = usernameResponse.body.trim();
+
+            if (username.isNotEmpty) {
+              profile.setName(username);
+            }
+          } else {
+            debugPrint(
+              'Username request failed: ${usernameResponse.statusCode}',
+            );
+          }
+        } catch (e) {
+          debugPrint('Username request error: $e');
+        }
+
+        if (!mounted) return;
+
         _showMessage(AppStrings.loginSuccess);
 
-        Navigator.pushNamedAndRemoveUntil(
+      Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.home,
               (route) => false,

@@ -9,6 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_scale.dart';
 import '../../core/widgets/loading_dots.dart';
+import '../../core/profile/profile_controller.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -95,6 +96,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        ProfileController.instance.setName(_usernameController.text.trim());
+        ProfileController.instance.setEmail(_emailController.text.trim());
+
         _showMessage(AppStrings.registerSuccess);
         Navigator.pop(context);
       } else {
