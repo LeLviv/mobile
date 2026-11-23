@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 
@@ -27,7 +26,7 @@ class ProfileController extends ChangeNotifier {
   List<String> get outageGroups => List.unmodifiable(_outageGroups);
   String? get token => _token;
 
-  Future<void> restoreName() async {
+  Future<void> restoreProfile() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final savedName = prefs.getString(_nameKey);
@@ -44,7 +43,7 @@ class ProfileController extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Name restore error: $e');
+      debugPrint('Profile restore error: $e');
     }
   }
 
@@ -114,16 +113,16 @@ class ProfileController extends ChangeNotifier {
     _outageGroups = [];
     notifyListeners();
 
-    unawaited(_removeSavedName());
+    unawaited(_clearSavedProfile());
   }
 
-  Future<void> _removeSavedName() async {
+  Future<void> _clearSavedProfile() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_nameKey);
       await prefs.remove(_emailKey);
     } catch (e) {
-      debugPrint('Name remove error: $e');
+      debugPrint('Profile clear error: $e');
     }
   }
 }

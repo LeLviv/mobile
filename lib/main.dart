@@ -59,7 +59,7 @@ void main() async {
     debugPrint('Notification initialization failed: $e\n$stackTrace');
   }
 
-  await ProfileController.instance.restoreName();
+  await ProfileController.instance.restoreProfile();
 
   runApp(
     MaterialApp(

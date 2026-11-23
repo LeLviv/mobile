@@ -235,6 +235,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                         width: avatarSize,
                         height: avatarSize,
                         child: Stack(
+                          clipBehavior: Clip.none,
                           children: [
                             ProfileAvatar(
                               size: avatarSize,

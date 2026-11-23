@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/app_assets.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_dimens.dart';
 
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
@@ -15,12 +13,14 @@ class ProfileAvatar extends StatelessWidget {
     this.avatar,
     this.shadow = false,
     this.imagePadding = 0,
+    this.shadowFraction = 1.0,
   });
 
   final double size;
   final File? avatar;
   final bool shadow;
   final double imagePadding;
+  final double shadowFraction;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +29,12 @@ class ProfileAvatar extends StatelessWidget {
       height: size,
       child: Stack(
         alignment: Alignment.center,
+        clipBehavior: Clip.none,
         children: [
           if (shadow)
             Container(
-              width: size * AppDimens.homeShadowCircleFraction,
-              height: size * AppDimens.homeShadowCircleFraction,
+              width: size * shadowFraction,
+              height: size * shadowFraction,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -46,11 +47,7 @@ class ProfileAvatar extends StatelessWidget {
               ),
             ),
           if (avatar == null)
-            SvgPicture.asset(
-              AppAssets.avatar,
-              width: size,
-              height: size,
-            )
+            SvgPicture.asset(AppAssets.avatar, width: size, height: size)
           else
             Padding(
               padding: EdgeInsets.all(size * imagePadding),
