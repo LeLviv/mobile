@@ -34,6 +34,7 @@ class HomeHeader extends StatelessWidget {
             size: AppDimens.avatarRadius * 2,
             avatar: avatar,
             shadow: true,
+            imagePadding: AppDimens.avatarImagePaddingFraction,
           ),
         ),
         const SizedBox(width: AppDimens.homeHeaderGap),

@@ -74,4 +74,5 @@ abstract final class AppDimens {
   static const double homeAlertBodyFactor = 0.042;
   static const int homeAlertImageFlex = 5;
   static const int homeAlertTextFlex = 6;
+  static const double avatarImagePaddingFraction = 0.12;
 }
