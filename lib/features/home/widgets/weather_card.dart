@@ -5,19 +5,20 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimens.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/app_card.dart';
 
 class WeatherCard extends StatelessWidget {
   final int temperature;
   final String title;
   final String advice;
   final VoidCallback onDetailsTap;
+  final String imageAsset;
 
   const WeatherCard({
     super.key,
     required this.temperature,
     required this.title,
     required this.advice,
+    required this.imageAsset,
     required this.onDetailsTap,
   });
 
@@ -29,12 +30,19 @@ class WeatherCard extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppCard(
-              solid: true,
+            Container(
               width: AppDimens.homeWeatherCardSize,
               height: AppDimens.homeWeatherCardSize,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: AppColors.homePrimary,
+                borderRadius: BorderRadius.circular(AppDimens.homeCardRadius),
+              ),
               child: Stack(
                 children: [
+                  Positioned.fill(
+                    child: SvgPicture.asset(imageAsset, fit: BoxFit.contain),
+                  ),
                   Center(
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -58,15 +66,6 @@ class WeatherCard extends StatelessWidget {
                           child: Text('°', style: AppTextStyles.homeDegree),
                         ),
                       ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 14,
-                    left: 12,
-                    child: SvgPicture.asset(
-                      AppAssets.sun,
-                      width: AppDimens.homeSunSize,
-                      height: AppDimens.homeSunSize,
                     ),
                   ),
                 ],

@@ -18,22 +18,22 @@ abstract final class AppTextStyles {
   static const homeTemperature = TextStyle(
     fontSize: 96,
     height: 1,
-    color: AppColors.homePrimary,
+    color: AppColors.homeOnPrimary,
     shadows: [
-      Shadow(color: AppColors.homePrimary, offset: Offset(0.1, 0)),
-      Shadow(color: AppColors.homePrimary, offset: Offset(-0.1, 0)),
-      Shadow(color: AppColors.homePrimary, offset: Offset(0, 0.1)),
-      Shadow(color: AppColors.homePrimary, offset: Offset(0, -0.1)),
+      Shadow(color: AppColors.homeOnPrimary, offset: Offset(0.1, 0)),
+      Shadow(color: AppColors.homeOnPrimary, offset: Offset(-0.1, 0)),
+      Shadow(color: AppColors.homeOnPrimary, offset: Offset(0, 0.1)),
+      Shadow(color: AppColors.homeOnPrimary, offset: Offset(0, -0.1)),
     ],
   );
 
   static const homeDegree = TextStyle(
     fontSize: 50,
     height: 1,
-    color: AppColors.homePrimary,
+    color: AppColors.homeOnPrimary,
     shadows: [
-      Shadow(color: AppColors.homePrimary, offset: Offset(0.6, 0)),
-      Shadow(color: AppColors.homePrimary, offset: Offset(-0.6, 0)),
+      Shadow(color: AppColors.homeOnPrimary, offset: Offset(0.6, 0)),
+      Shadow(color: AppColors.homeOnPrimary, offset: Offset(-0.6, 0)),
     ],
   );
 
