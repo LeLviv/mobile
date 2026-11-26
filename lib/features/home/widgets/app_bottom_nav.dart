@@ -8,8 +8,9 @@ import '../../../core/theme/app_text_styles.dart';
 
 class _NavItem {
   final String asset;
+  final String activeAsset;
   final String label;
-  const _NavItem(this.asset, this.label);
+  const _NavItem(this.asset, this.activeAsset, this.label);
 }
 
 class AppBottomNav extends StatelessWidget {
@@ -23,11 +24,14 @@ class AppBottomNav extends StatelessWidget {
   });
 
   static const List<_NavItem> _items = [
-    _NavItem(AppAssets.navTransport, AppStrings.navTransport),
-    _NavItem(AppAssets.navNews, AppStrings.navNews),
-    _NavItem(AppAssets.navHome, AppStrings.navHome),
-    _NavItem(AppAssets.navEvents, AppStrings.navEvents),
-    _NavItem(AppAssets.navForms, AppStrings.navForms),
+    _NavItem(AppAssets.navTransport, AppAssets.navTransportActive,
+        AppStrings.navTransport),
+    _NavItem(AppAssets.navNews, AppAssets.navNewsActive, AppStrings.navNews),
+    _NavItem(AppAssets.navHome, AppAssets.navHomeActive, AppStrings.navHome),
+    _NavItem(AppAssets.navEvents, AppAssets.navEventsActive,
+        AppStrings.navEvents),
+    _NavItem(AppAssets.navForms, AppAssets.navFormsActive,
+        AppStrings.navForms),
   ];
 
   @override
@@ -130,10 +134,9 @@ class _NavItemView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               SvgPicture.asset(
-                item.asset,
+                t > 0.5 ? item.activeAsset : item.asset,
                 width: AppDimens.homeNavIconSize,
                 height: AppDimens.homeNavIconSize,
-                color: color,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
               const SizedBox(height: 2),

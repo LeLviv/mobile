@@ -1,5 +1,5 @@
 import 'package:timezone/timezone.dart' as tz;
-
+import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/lviv_time.dart';
 import '../data/weather_advice_table.dart';
@@ -9,46 +9,55 @@ enum WeatherCondition {
     codes: [0, 1],
     title: AppStrings.weatherClear,
     adviceCategory: AdviceCategory.sunny,
+    image: AppAssets.weatherSunny,
   ),
   partlyCloudy(
     codes: [2],
     title: AppStrings.weatherPartlyCloudy,
     adviceCategory: AdviceCategory.sunny,
+    image: AppAssets.weatherSunny,
   ),
   cloudy(
     codes: [3],
     title: AppStrings.weatherCloudy,
     adviceCategory: AdviceCategory.cloudy,
+    image: AppAssets.weatherCloudy,
   ),
   fog(
     codes: [45, 48],
     title: AppStrings.weatherFog,
     adviceCategory: AdviceCategory.cloudy,
+    image: AppAssets.weatherCloudy,
   ),
   drizzle(
     codes: [51, 53, 55, 56, 57],
     title: AppStrings.weatherDrizzle,
     adviceCategory: AdviceCategory.rain,
+    image: AppAssets.weatherRain,
   ),
   rain(
     codes: [61, 63, 65, 66, 67, 80, 81, 82],
     title: AppStrings.weatherRain,
     adviceCategory: AdviceCategory.rain,
+    image: AppAssets.weatherRain,
   ),
   snow(
     codes: [71, 73, 75, 77, 85, 86],
     title: AppStrings.weatherSnow,
     adviceCategory: AdviceCategory.snow,
+    image: AppAssets.weatherSnow,
   ),
   thunderstorm(
     codes: [95, 96, 97, 99],
     title: AppStrings.weatherThunderstorm,
     adviceCategory: AdviceCategory.rain,
+    image: AppAssets.weatherRain,
   ),
   unknown(
     codes: [],
     title: AppStrings.weatherUnknown,
     adviceCategory: AdviceCategory.cloudy,
+    image: AppAssets.weatherCloudy,
   );
 
   final List<int> codes;
@@ -57,10 +66,13 @@ enum WeatherCondition {
 
   final AdviceCategory adviceCategory;
 
+  final String image;
+
   const WeatherCondition({
     required this.codes,
     required this.title,
     required this.adviceCategory,
+    required this.image,
   });
 
   static WeatherCondition fromCode(int code) {

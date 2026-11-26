@@ -93,6 +93,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             temperature: weather.roundedTemperature,
             title: weather.condition.title,
             advice: WeatherTexts.advice(weather),
+            imageAsset: weather.condition.image,
             onDetailsTap: () {},
           );
         }
