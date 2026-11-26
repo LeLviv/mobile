@@ -6,6 +6,7 @@ import 'package:mobile/core/notifications/notification_service.dart';
 import 'package:mobile/features/air_raid/air_raid_notifications.dart';
 import 'package:mobile/firebase_options.dart';
 
+import 'core/profile/profile_controller.dart';
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/lviv_time.dart';
@@ -57,6 +58,8 @@ void main() async {
   } catch (e, stackTrace) {
     debugPrint('Notification initialization failed: $e\n$stackTrace');
   }
+
+  await ProfileController.instance.restoreProfile();
 
   runApp(
     MaterialApp(

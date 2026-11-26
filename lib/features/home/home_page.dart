@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../../core/constants/app_routes.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/profile/profile_controller.dart';
@@ -78,8 +80,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     setState(() => _weather = future);
     try {
       await future;
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   Widget _buildWeather() {
@@ -101,16 +102,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           child: Center(
             child: snapshot.hasError
                 ? GestureDetector(
-              onTap: _reloadWeather,
-              child: const Text(
-                AppStrings.weatherLoadError,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.homeWeatherAdvice,
-              ),
-            )
-                : const CircularProgressIndicator(
-              color: AppColors.homePrimary,
-            ),
+                    onTap: _reloadWeather,
+                    child: const Text(
+                      AppStrings.weatherLoadError,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.homeWeatherAdvice,
+                    ),
+                  )
+                : const CircularProgressIndicator(color: AppColors.homePrimary),
           ),
         );
       },
@@ -137,9 +136,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 listenable: ProfileController.instance,
                 builder: (context, _) {
                   final name = ProfileController.instance.name;
+                  final avatar = ProfileController.instance.avatar;
 
                   return HomeHeader(
                     userName: name.isEmpty ? _userName : name,
+                    avatar: avatar,
                     onNotificationsTap: () {},
                     onAvatarTap: () =>
                         Navigator.pushNamed(context, AppRoutes.usersettings),

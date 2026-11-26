@@ -1,12 +1,16 @@
-
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileController extends ChangeNotifier {
   ProfileController._();
 
   static final ProfileController instance = ProfileController._();
+
+  static const String _nameKey = 'profile_name';
+  static const String _emailKey = 'profile_email';
 
   File? _avatar;
   String _name = '';
@@ -22,6 +26,45 @@ class ProfileController extends ChangeNotifier {
   List<String> get outageGroups => List.unmodifiable(_outageGroups);
   String? get token => _token;
 
+  Future<void> restoreProfile() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedName = prefs.getString(_nameKey);
+
+      final savedEmail = prefs.getString(_emailKey);
+
+      if (savedEmail != null) {
+        _email = savedEmail;
+      }
+
+      if ((savedName != null && savedName.isNotEmpty) ||
+          (savedEmail != null && savedEmail.isNotEmpty)) {
+        if (savedName != null) _name = savedName;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Profile restore error: $e');
+    }
+  }
+
+  Future<void> _saveName(String value) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_nameKey, value);
+    } catch (e) {
+      debugPrint('Name save error: $e');
+    }
+  }
+
+  Future<void> _saveEmail(String value) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_emailKey, value);
+    } catch (e) {
+      debugPrint('Email save error: $e');
+    }
+  }
+
   void setAvatar(File? value) {
     if (_avatar?.path == value?.path) return;
     _avatar = value;
@@ -32,6 +75,8 @@ class ProfileController extends ChangeNotifier {
     if (_name == value) return;
     _name = value;
     notifyListeners();
+
+    unawaited(_saveName(value));
   }
 
   void setToken(String value) {
@@ -50,6 +95,7 @@ class ProfileController extends ChangeNotifier {
     if (_email == value) return;
     _email = value;
     notifyListeners();
+    unawaited(_saveEmail(value));
   }
 
   void setOutageGroups(List<String> value) {
@@ -66,5 +112,17 @@ class ProfileController extends ChangeNotifier {
     _email = '';
     _outageGroups = [];
     notifyListeners();
+
+    unawaited(_clearSavedProfile());
+  }
+
+  Future<void> _clearSavedProfile() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_nameKey);
+      await prefs.remove(_emailKey);
+    } catch (e) {
+      debugPrint('Profile clear error: $e');
+    }
   }
 }

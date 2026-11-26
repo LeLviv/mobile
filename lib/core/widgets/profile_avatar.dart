@@ -1,44 +1,77 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-import '../profile/profile_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../constants/app_assets.dart';
 import '../theme/app_colors.dart';
 
 class ProfileAvatar extends StatelessWidget {
-  const ProfileAvatar({super.key, required this.size, this.shadow = false});
+  const ProfileAvatar({
+    super.key,
+    required this.size,
+    this.avatar,
+    this.shadow = false,
+    this.imagePadding = 0,
+    this.shadowFraction = 1.0,
+  });
 
   final double size;
+  final File? avatar;
   final bool shadow;
+  final double imagePadding;
+  final double shadowFraction;
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: ProfileController.instance,
-      builder: (context, _) {
-        final image = ProfileController.instance.avatar;
-        return Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.loginAccent,
-            boxShadow: shadow
-                ? const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 16,
-                offset: Offset(0, 6),
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          if (shadow)
+            Container(
+              width: size * shadowFraction,
+              height: size * shadowFraction,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.homeShadow,
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ]
-                : null,
-            image: image == null
-                ? null
-                : DecorationImage(image: FileImage(image), fit: BoxFit.cover),
+            ),
+          Padding(
+            padding: EdgeInsets.all(size * imagePadding),
+            child: avatar == null
+                ? SvgPicture.asset(
+                    AppAssets.avatar,
+                    width: size,
+                    height: size,
+                  )
+                : ClipOval(
+                    child: Image.file(
+                      avatar!,
+                      width: size,
+                      height: size,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return SvgPicture.asset(
+                          AppAssets.avatar,
+                          width: size,
+                          height: size,
+                        );
+                      },
+                    ),
+                  ),
           ),
-          child: image == null
-              ? Icon(Icons.person, size: size * 0.7, color: Colors.white)
-              : null,
-        );
-      },
+        ],
+      ),
     );
   }
 }

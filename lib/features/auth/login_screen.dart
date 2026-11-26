@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,6 +12,7 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_scale.dart';
 import '../../core/widgets/loading_dots.dart';
 import '../../core/storage/token_storage.dart';
+import '../../core/profile/profile_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,6 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _tokenStorage = TokenStorage();
 
   bool _isLoading = false;
+  static const Duration _loginTimeout = Duration(seconds: 10);
+  static const Duration _usernameRequestTimeout = Duration(seconds: 5);
 
   @override
   void dispose() {
@@ -34,14 +39,35 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showMessage(String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(text)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   String? _validateRequired(String? value) {
     if ((value ?? '').trim().isEmpty) return AppStrings.fieldRequired;
     return null;
+  }
+
+  Future<void> _fetchUsername(String token, ProfileController profile) async {
+    try {
+      final response = await http
+          .get(
+            ApiEndpoints.username,
+            headers: {'Authorization': 'Bearer $token'},
+          )
+          .timeout(_usernameRequestTimeout);
+
+      if (response.statusCode == 200) {
+        final username = utf8.decode(response.bodyBytes).trim();
+
+        if (username.isNotEmpty) {
+          profile.setName(username);
+        }
+      } else {
+        debugPrint('Username request failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Username request error: $e');
+    }
   }
 
   Future<void> _login() async {
@@ -52,25 +78,26 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final response = await http.post(
-        ApiEndpoints.authenticate,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': _emailController.text.trim(),
-          'password': _passwordController.text,
-        }),
-      );
+      final response = await http
+          .post(
+            ApiEndpoints.authenticate,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'email': _emailController.text.trim(),
+              'password': _passwordController.text,
+            }),
+          )
+          .timeout(_loginTimeout);
 
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data =
-        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-        final token = (data['token'] ??
-            data['accessToken'] ??
-            data['access_token']) as String?;
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final profile = ProfileController.instance;
+
+        final token =
+            (data['token'] ?? data['accessToken'] ?? data['access_token'])
+                as String?;
 
         if (token == null) {
           debugPrint('Login: токен не знайдено у відповіді');
@@ -81,12 +108,17 @@ class _LoginScreenState extends State<LoginScreen> {
         await _tokenStorage.save(token);
         if (!mounted) return;
 
+        profile.setToken(token);
+        profile.setEmail(_emailController.text.trim());
+
+        unawaited(_fetchUsername(token, profile));
+
         _showMessage(AppStrings.loginSuccess);
 
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.home,
-              (route) => false,
+          (route) => false,
         );
       } else {
         debugPrint('Login failed: ${response.statusCode}');
@@ -137,8 +169,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.fieldFill,
-                        borderRadius:
-                        BorderRadius.circular(AppDimens.langRadius),
+                        borderRadius: BorderRadius.circular(
+                          AppDimens.langRadius,
+                        ),
                         boxShadow: const [
                           BoxShadow(
                             color: Colors.black45,
@@ -224,15 +257,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: _isLoading
                                   ? const LoadingDots()
                                   : FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  AppStrings.loginButton,
-                                  style: TextStyle(
-                                    fontSize: s.font(0.1),
-                                    color: AppColors.text,
-                                  ),
-                                ),
-                              ),
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        AppStrings.loginButton,
+                                        style: TextStyle(
+                                          fontSize: s.font(0.1),
+                                          color: AppColors.text,
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ),
                           SizedBox(height: s.w(0.04)),
@@ -242,26 +275,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: s.w(0.12),
                               child: OutlinedButton(
                                 onPressed: () {},
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: AppColors.fieldFill,
-                                  foregroundColor: AppColors.primary,
-                                  shape: const StadiumBorder(),
-                                ).copyWith(
-                                  side: WidgetStateProperty.resolveWith(
-                                        (states) {
-                                      if (states
-                                          .contains(WidgetState.pressed) ||
-                                          states
-                                              .contains(WidgetState.focused)) {
-                                        return const BorderSide(
-                                          color: AppColors.primary,
-                                          width: 2,
-                                        );
-                                      }
-                                      return BorderSide.none;
-                                    },
-                                  ),
-                                ),
+                                style:
+                                    OutlinedButton.styleFrom(
+                                      backgroundColor: AppColors.fieldFill,
+                                      foregroundColor: AppColors.primary,
+                                      shape: const StadiumBorder(),
+                                    ).copyWith(
+                                      side: WidgetStateProperty.resolveWith((
+                                        states,
+                                      ) {
+                                        if (states.contains(
+                                              WidgetState.pressed,
+                                            ) ||
+                                            states.contains(
+                                              WidgetState.focused,
+                                            )) {
+                                          return const BorderSide(
+                                            color: AppColors.primary,
+                                            width: 2,
+                                          );
+                                        }
+                                        return BorderSide.none;
+                                      }),
+                                    ),
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Text(
@@ -292,7 +328,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     children: [
                                       const TextSpan(
                                         text:
-                                        '${AppStrings.noAccountQuestion}\n'
+                                            '${AppStrings.noAccountQuestion}\n'
                                             '${AppStrings.noAccountTap} ',
                                       ),
                                       TextSpan(
