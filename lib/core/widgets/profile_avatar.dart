@@ -46,27 +46,30 @@ class ProfileAvatar extends StatelessWidget {
                 ],
               ),
             ),
-          if (avatar == null)
-            SvgPicture.asset(AppAssets.avatar, width: size, height: size)
-          else
-            Padding(
-              padding: EdgeInsets.all(size * imagePadding),
-              child: ClipOval(
-                child: Image.file(
-                  avatar!,
-                  width: size,
-                  height: size,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return SvgPicture.asset(
-                      AppAssets.avatar,
+          Padding(
+            padding: EdgeInsets.all(size * imagePadding),
+            child: avatar == null
+                ? SvgPicture.asset(
+                    AppAssets.avatar,
+                    width: size,
+                    height: size,
+                  )
+                : ClipOval(
+                    child: Image.file(
+                      avatar!,
                       width: size,
                       height: size,
-                    );
-                  },
-                ),
-              ),
-            ),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return SvgPicture.asset(
+                          AppAssets.avatar,
+                          width: size,
+                          height: size,
+                        );
+                      },
+                    ),
+                  ),
+          ),
         ],
       ),
     );
