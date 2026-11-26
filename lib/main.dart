@@ -6,8 +6,10 @@ import 'package:mobile/core/notifications/notification_service.dart';
 import 'package:mobile/features/air_raid/air_raid_notifications.dart';
 import 'package:mobile/firebase_options.dart';
 
-import 'core/profile/profile_controller.dart';
 import 'core/constants/app_routes.dart';
+import 'core/network/user_info_service.dart';
+import 'core/profile/profile_controller.dart';
+import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/lviv_time.dart';
 import 'features/auth/login_screen.dart';
@@ -41,6 +43,43 @@ class AppScrollBehavior extends MaterialScrollBehavior {
   };
 }
 
+Future<String> _resolveInitialRoute() async {
+  final tokenStorage = TokenStorage();
+  try {
+    final token = await tokenStorage.read();
+    if (token == null || token.isEmpty) {
+      return AppRoutes.login;
+    }
+
+    if (TokenStorage.isJwtExpired(token)) {
+      await tokenStorage.clearAll();
+      await ProfileController.instance.clear();
+      return AppRoutes.login;
+    }
+
+    await ProfileController.instance.restoreProfile();
+    ProfileController.instance.setToken(token);
+
+    final usernameResult = await UserInfoService.fetchUsername(token);
+    if (usernameResult.status == UsernameFetchStatus.unauthorized) {
+      await tokenStorage.clearAll();
+      await ProfileController.instance.clear();
+      return AppRoutes.login;
+    }
+
+    if (ProfileController.instance.name.isEmpty &&
+        usernameResult.username != null &&
+        usernameResult.username!.isNotEmpty) {
+      ProfileController.instance.setName(usernameResult.username!);
+    }
+
+    return AppRoutes.home;
+  } catch (e) {
+    debugPrint('Session restore error: $e');
+    return AppRoutes.login;
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LvivTime.init();
@@ -59,14 +98,14 @@ void main() async {
     debugPrint('Notification initialization failed: $e\n$stackTrace');
   }
 
-  await ProfileController.instance.restoreProfile();
+  final initialRoute = await _resolveInitialRoute();
 
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       scrollBehavior: AppScrollBehavior(),
-      initialRoute: AppRoutes.login,
+      initialRoute: initialRoute,
       routes: {
         AppRoutes.login: (_) => const LoginScreen(),
         AppRoutes.register: (_) => const RegisterScreen(),

@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/network/user_info_service.dart';
+import '../../core/profile/profile_controller.dart';
 import '../../core/constants/app_routes.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/network/api_endpoints.dart';
@@ -12,7 +14,6 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_scale.dart';
 import '../../core/widgets/loading_dots.dart';
 import '../../core/storage/token_storage.dart';
-import '../../core/profile/profile_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,10 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _tokenStorage = TokenStorage();
+  static const Duration _loginTimeout = Duration(seconds: 10);
 
   bool _isLoading = false;
-  static const Duration _loginTimeout = Duration(seconds: 10);
-  static const Duration _usernameRequestTimeout = Duration(seconds: 5);
 
   @override
   void dispose() {
@@ -47,26 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  Future<void> _fetchUsername(String token, ProfileController profile) async {
-    try {
-      final response = await http
-          .get(
-            ApiEndpoints.username,
-            headers: {'Authorization': 'Bearer $token'},
-          )
-          .timeout(_usernameRequestTimeout);
+  Future<void> _fetchUsername(String token) async {
+    final result = await UserInfoService.fetchUsername(token);
 
-      if (response.statusCode == 200) {
-        final username = utf8.decode(response.bodyBytes).trim();
-
-        if (username.isNotEmpty) {
-          profile.setName(username);
-        }
-      } else {
-        debugPrint('Username request failed: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('Username request error: $e');
+    if (result.username != null && result.username!.isNotEmpty) {
+      ProfileController.instance.setName(result.username!);
     }
   }
 
@@ -92,26 +77,34 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        final profile = ProfileController.instance;
+        final data =
+            jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
 
         final token =
             (data['token'] ?? data['accessToken'] ?? data['access_token'])
                 as String?;
 
-        if (token == null) {
+        final refreshToken =
+            (data['refreshToken'] ?? data['refresh_token']) as String?;
+
+        if (token == null || token.isEmpty) {
           debugPrint('Login: токен не знайдено у відповіді');
           _showMessage(AppStrings.loginError);
           return;
         }
 
-        await _tokenStorage.save(token);
+        await _tokenStorage.saveAuthTokens(
+          accessToken: token,
+          refreshToken: refreshToken,
+        );
+
         if (!mounted) return;
 
+        final profile = ProfileController.instance;
         profile.setToken(token);
         profile.setEmail(_emailController.text.trim());
 
-        unawaited(_fetchUsername(token, profile));
+        unawaited(_fetchUsername(token));
 
         _showMessage(AppStrings.loginSuccess);
 
@@ -126,7 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       debugPrint('Login exception: $e');
+
       if (!mounted) return;
+
       _showMessage(AppStrings.connectionError);
     } finally {
       if (mounted) {

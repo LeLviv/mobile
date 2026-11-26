@@ -13,6 +13,7 @@ import '../../core/theme/app_scale.dart';
 import '../../core/widgets/edit_sheets.dart';
 import '../../core/widgets/profile_avatar.dart';
 import '../../core/constants/app_routes.dart';
+import '../../core/storage/token_storage.dart';
 
 class UserSettingsScreen extends StatefulWidget {
   const UserSettingsScreen({super.key});
@@ -158,6 +159,19 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     if (result != null) _profile.setEmail(result);
   }
 
+  Future<void> _clearSessionAndNavigateToLogin() async {
+    await TokenStorage().clearAll();
+    await _profile.clear();
+
+    if (!mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (route) => false,
+    );
+  }
+
   Future<void> _logout() async {
     final ok = await showConfirmDialog(
       context,
@@ -165,14 +179,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     );
 
     if (!ok || !mounted) return;
-
-    _profile.clear();
-
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.login,
-      (route) => false,
-    );
+    await _clearSessionAndNavigateToLogin();
   }
 
   Future<void> _deleteAccount() async {
@@ -183,14 +190,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     );
 
     if (!ok || !mounted) return;
-
-    _profile.clear();
-
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.login,
-      (route) => false,
-    );
+    await _clearSessionAndNavigateToLogin();
   }
 
   Future<void> _editGroup() async {
