@@ -20,12 +20,17 @@ class AlertRepository {
         _tokenStorage = tokenStorage ?? TokenStorage();
 
   Future<AlertStatus> fetchStatus() async {
-    final token = await _tokenStorage.read();
+    final airRaidToken = await _tokenStorage.readAirRaidToken();
+    final authToken = await _tokenStorage.read();
+    final token = (airRaidToken != null && airRaidToken.isNotEmpty)
+        ? airRaidToken
+        : authToken;
 
     final response = await _client.get(
       ApiEndpoints.airRaidStatus,
       headers: {
-        if (token != null) 'Authorization': 'Bearer $token',
+        if (token != null && token.isNotEmpty)
+          'Authorization': 'Bearer $token',
       },
     ).timeout(_timeout);
 

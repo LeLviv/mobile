@@ -30,16 +30,18 @@ class ProfileController extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final savedName = prefs.getString(_nameKey);
-
       final savedEmail = prefs.getString(_emailKey);
 
-      if (savedEmail != null) {
+      if (savedEmail != null && savedEmail.isNotEmpty) {
         _email = savedEmail;
+      }
+
+      if (savedName != null && savedName.isNotEmpty) {
+        _name = savedName;
       }
 
       if ((savedName != null && savedName.isNotEmpty) ||
           (savedEmail != null && savedEmail.isNotEmpty)) {
-        if (savedName != null) _name = savedName;
         notifyListeners();
       }
     } catch (e) {
@@ -75,7 +77,6 @@ class ProfileController extends ChangeNotifier {
     if (_name == value) return;
     _name = value;
     notifyListeners();
-
     unawaited(_saveName(value));
   }
 
@@ -104,16 +105,15 @@ class ProfileController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clear() {
+  Future<void> clear() async {
     _avatar = null;
     _name = '';
-    _token = '';
+    _token = null;
     _phone = '';
     _email = '';
     _outageGroups = [];
     notifyListeners();
-
-    unawaited(_clearSavedProfile());
+    await _clearSavedProfile();
   }
 
   Future<void> _clearSavedProfile() async {
